@@ -16,7 +16,7 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "gc9a01.h"
-
+#include "display.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -61,7 +61,7 @@ void gc9a01_displayInit(void)
         .lcd_param_bits = EXAMPLE_LCD_PARAM_BITS,
         .spi_mode = 0,
         .trans_queue_depth = 10,
-        .on_color_trans_done = example_notify_lvgl_flush_ready,
+        .on_color_trans_done = display_notify_lvgl_flush_ready,
         .user_ctx = &disp_drv,
     };
     // Attach the LCD to the SPI bus
