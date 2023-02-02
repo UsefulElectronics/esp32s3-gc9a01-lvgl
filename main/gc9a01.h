@@ -66,7 +66,7 @@
 /* VARIABLES -----------------------------------------------------------------*/
 extern esp_lcd_panel_handle_t panel_handle;
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
-
+void gc9a01_displayInit(void);
 
 
 #endif /* MAIN_GC9A01_H_ */

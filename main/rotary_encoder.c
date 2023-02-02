@@ -20,14 +20,17 @@
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 typedef struct
 {
-	uint8_t  whatchPoints[ENCODER_MAX_WHATCHPIONT_COINT];
 	uint32_t eventCount;
 	QueueHandle_t queue;
 	void (*callback)(uint32_t encoderValue);
 }encoder_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *encoder = "encoder";
+
+static pcnt_unit_handle_t pcnt_unit = NULL;
+
 encoder_handler_t hEncoder = {0};
+
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -47,13 +50,21 @@ static bool pcnt_on_reach(pcnt_unit_handle_t unit, const pcnt_watch_event_data_t
 
 void encoder_handler_task(void *param)
 {
+	int pulse_count = 0;
+
+	const uint8_t pulse_offest = 50;
+
     while (1)
     {
-        if(xQueueReceive(hEncoder.queue, &hEncoder.eventCount, portMAX_DELAY))
-        {
-        	hEncoder.callback(hEncoder.eventCount);
-//            ESP_LOGI(TAG, "Watch point event, count: %d", event_count);
-        }
+//        if(xQueueReceive(hEncoder.queue, &hEncoder.eventCount, portMAX_DELAY))
+//        {
+////        	hEncoder.callback(hEncoder.eventCount);
+//        }
+        pcnt_unit_get_count(pcnt_unit, &pulse_count);
+
+        hEncoder.callback(pulse_count + pulse_offest);
+
+        vTaskDelay(250/portTICK_PERIOD_MS);
     }
 }
 /**
@@ -68,7 +79,7 @@ void encoder_init(void* callback)
         .high_limit = EXAMPLE_PCNT_HIGH_LIMIT,
         .low_limit = EXAMPLE_PCNT_LOW_LIMIT,
     };
-    pcnt_unit_handle_t pcnt_unit = NULL;
+
     ESP_ERROR_CHECK(pcnt_new_unit(&unit_config, &pcnt_unit));
 
     ESP_LOGI(encoder, "set glitch filter");
@@ -98,7 +109,12 @@ void encoder_init(void* callback)
     ESP_ERROR_CHECK(pcnt_channel_set_level_action(pcnt_chan_b, PCNT_CHANNEL_LEVEL_ACTION_KEEP, PCNT_CHANNEL_LEVEL_ACTION_INVERSE));
 
     ESP_LOGI(encoder, "add watch points and register callbacks");
-    int watch_points[] = {EXAMPLE_PCNT_LOW_LIMIT, -50, 0, 50, EXAMPLE_PCNT_HIGH_LIMIT};
+
+
+    int watch_points[] = {-50,-40,-30};
+
+//    memcpy(hEncoder.whatchPoints, watch_points, sizeof(watch_points));
+
     for (size_t i = 0; i < sizeof(watch_points) / sizeof(watch_points[0]); i++) {
         ESP_ERROR_CHECK(pcnt_unit_add_watch_point(pcnt_unit, watch_points[i]));
     }

@@ -34,7 +34,7 @@ extern lv_disp_drv_t disp_drv;
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
 bool display_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx);
 
-
+void displayConfig(void);
 #endif /* MAIN_DISPLAY_H_ */
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
