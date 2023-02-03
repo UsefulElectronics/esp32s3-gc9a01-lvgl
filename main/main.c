@@ -33,6 +33,7 @@ static const char *main = "main";
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void main_encoder_cb(uint8_t knobPosition);
+static void lvgl_time_task(void*param);
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 
 void app_main(void)
@@ -43,16 +44,23 @@ void app_main(void)
 
 	encoder_init(main_encoder_cb);
 
-
 	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
-    while (1)
-    {
-        // raise the task priority of LVGL and/or reduce the handler period can improve the performance
-        vTaskDelay(pdMS_TO_TICKS(10));
+	xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
+
+
+}
+
+void lvgl_time_task(void* param)
+{
+	while(1)
+	{
         // The task running lv_timer_handler should have lower priority than that running `lv_tick_inc`
         lv_timer_handler();
-    }
+        // raise the task priority of LVGL and/or reduce the handler period can improve the performance
+        vTaskDelay(pdMS_TO_TICKS(10));
+
+	}
 }
 
 static void main_encoder_cb(uint8_t knobPosition)
