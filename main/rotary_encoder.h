@@ -23,6 +23,7 @@
 #include "freertos/queue.h"
 #include "esp_log.h"
 #include "driver/pulse_cnt.h"
+#include "driver/gpio.h"
 /* MACROS --------------------------------------------------------------------*/
 
 
@@ -33,6 +34,7 @@
 
 #define EXAMPLE_EC11_GPIO_A 11
 #define EXAMPLE_EC11_GPIO_B 12
+#define KNOB_BUTTON 13
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/

@@ -22,7 +22,7 @@ typedef struct
 {
 	uint32_t eventCount;
 	QueueHandle_t queue;
-	void (*callback)(uint32_t encoderValue);
+	void (*callback)(uint32_t encoderValue, bool encoderButton);
 }encoder_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *encoder = "encoder";
@@ -47,22 +47,26 @@ static bool pcnt_on_reach(pcnt_unit_handle_t unit, const pcnt_watch_event_data_t
     xQueueSendFromISR(queue, &(edata->watch_point_value), &high_task_wakeup);
     return (high_task_wakeup == pdTRUE);
 }
-
+/**
+ * @brief This tatsk will read the encoder position value every 250ms
+ *
+ */
 void encoder_handler_task(void *param)
 {
 	int pulse_count = 0;
 
 	const uint8_t pulse_offest = 50;
 
+	bool encoderButon = 0;
+
     while (1)
     {
-//        if(xQueueReceive(hEncoder.queue, &hEncoder.eventCount, portMAX_DELAY))
-//        {
-////        	hEncoder.callback(hEncoder.eventCount);
-//        }
+
         pcnt_unit_get_count(pcnt_unit, &pulse_count);
 
-        hEncoder.callback(pulse_count + pulse_offest);
+        encoderButon = gpio_get_level(KNOB_BUTTON);
+
+        hEncoder.callback(pulse_count + pulse_offest, encoderButon);
 
         vTaskDelay(250/portTICK_PERIOD_MS);
     }
@@ -79,6 +83,13 @@ void encoder_init(void* callback)
         .high_limit = EXAMPLE_PCNT_HIGH_LIMIT,
         .low_limit = EXAMPLE_PCNT_LOW_LIMIT,
     };
+
+    gpio_config_t knob_button_config = {
+        .mode = GPIO_MODE_INPUT,
+        .pin_bit_mask = 1ULL << KNOB_BUTTON
+    };
+    ESP_ERROR_CHECK(gpio_config(&knob_button_config));
+
 
     ESP_ERROR_CHECK(pcnt_new_unit(&unit_config, &pcnt_unit));
 

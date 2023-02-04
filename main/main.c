@@ -32,10 +32,13 @@ static const char *main = "main";
 /* MACROS --------------------------------------------------------------------*/
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
-static void main_encoder_cb(uint8_t knobPosition);
+static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
 static void lvgl_time_task(void*param);
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
-
+/**
+ * @brief 	Initialize system peripherals and create FreeRTOS tasks
+ *
+ */
 void app_main(void)
 {
 	gc9a01_displayInit();
@@ -47,10 +50,11 @@ void app_main(void)
 	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
 	xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
-
-
 }
-
+/**
+ * @brief 	LVGL library timer task. Necessary to run once every 10ms
+ *
+ */
 void lvgl_time_task(void* param)
 {
 	while(1)
@@ -62,17 +66,14 @@ void lvgl_time_task(void* param)
 
 	}
 }
-
-static void main_encoder_cb(uint8_t knobPosition)
+/**
+ * @brief 	Encoder position read callback.
+ *
+ * @param 	knobPosition	: Read encoder position value.
+ */
+static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus)
 {
-	static uint8_t prevPosition = 0;
-
-	ESP_LOGI(main, "knob position: %d", knobPosition);
-
-	set_value((int32_t) knobPosition);
-
-	prevPosition = knobPosition;
-
+	set_value((int32_t) knobPosition, knobButtonStatus);
 }
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

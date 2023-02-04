@@ -28,7 +28,7 @@
 /* VARIABLES -----------------------------------------------------------------*/
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
-void set_value(int32_t v);
+void set_value(int32_t v, bool buttonStatus);
 
 
 #endif /* MAIN_LVGL_DEMO_UI_H_ */
