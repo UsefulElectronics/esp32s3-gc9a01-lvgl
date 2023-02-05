@@ -102,15 +102,15 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
 
 
     /*Create an animation to set the value*/
-    lv_anim_t a;
-    lv_anim_init(&a);
-    lv_anim_set_exec_cb(&a, set_value);
-    lv_anim_set_var(&a, indic);
-    lv_anim_set_values(&a, 0, 100);
-    lv_anim_set_time(&a, 2000);
-    lv_anim_set_repeat_delay(&a, 100);
-    lv_anim_set_playback_time(&a, 500);
-    lv_anim_set_playback_delay(&a, 100);
-    lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
-    lv_anim_start(&a);
+//    lv_anim_t a;
+//    lv_anim_init(&a);
+//    lv_anim_set_exec_cb(&a, set_value);
+//    lv_anim_set_var(&a, indic);
+//    lv_anim_set_values(&a, 0, 100);
+//    lv_anim_set_time(&a, 2000);
+//    lv_anim_set_repeat_delay(&a, 100);
+//    lv_anim_set_playback_time(&a, 500);
+//    lv_anim_set_playback_delay(&a, 100);
+//    lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
+//    lv_anim_start(&a);
 }

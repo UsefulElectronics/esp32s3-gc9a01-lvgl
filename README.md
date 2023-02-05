@@ -1,3 +1,29 @@
+
+[![Build Status](https://img.shields.io/badge/USEFUL%20ELECTRONICS-YOUTUBE-red)](https://www.youtube.com/user/wardzx1)
+
+# Sponsors
+
+### PCBWay
+Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the link below:
+
+[<img src="https://github.com/UsefulElectronics/esp32s3_la66_lorawan/blob/main/repo%20cover/banner320x100.gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
+
+***
+
+# ESP32S3 Interfacing Rotary Encoder and GC9A01 TFT Rounded Display with LVGL
+***
+### [Tutorial Link](https://youtu.be/77VYMpIAbq4) On [![Build Status](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/wardzx1) 
+
+In this tutorial, Rotary encoder is interfaced with ESP32S3 pulse counter peripheral that allows obtaining the position and rotation direction of the rotary encoder using 2 pins. 
+
+The obtained rotary encoder position value is shown on GC9A01 rounded display using LVGL library. 
+
+The working principle of rotary encoder and involved hardware is explained in details with the used code. 
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32c3-ws2812-mqtt/blob/main/circuitDiagram/cover.png)
+
+
+
+
 | Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- | -------- |
 
