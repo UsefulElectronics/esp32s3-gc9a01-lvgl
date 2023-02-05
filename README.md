@@ -19,10 +19,8 @@ In this tutorial, Rotary encoder is interfaced with ESP32S3 pulse counter periph
 The obtained rotary encoder position value is shown on GC9A01 rounded display using LVGL library. 
 
 The working principle of rotary encoder and involved hardware is explained in details with the used code. 
-![Circuit Diagram](https://github.com/UsefulElectronics/esp32c3-ws2812-mqtt/blob/main/circuitDiagram/cover.png)
-
-
-
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/cover1.png)
+***
 
 | Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- | -------- |
