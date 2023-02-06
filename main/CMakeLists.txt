@@ -1,2 +1,2 @@
-idf_component_register(SRCS "lvgl_demo_ui.c" "rotary_encoder.c" "rotary_encoder.c" "main.c" "gc9a01.c" "display.c"
+idf_component_register(SRCS "lvgl_demo_ui.c" "rotary_encoder.c" "rotary_encoder.c" "main.c" "gc9a01.c" "display.c" "ui_helpers.c" "ui_font_wise60.c"
                        INCLUDE_DIRS ".")
