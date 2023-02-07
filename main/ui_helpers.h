@@ -6,7 +6,7 @@
 #ifndef _SQUARELINE_PROJECT_UI_HELPERS_H
 #define _SQUARELINE_PROJECT_UI_HELPERS_H
 
-#include "ui.h"
+#include "lvgl_demo_ui.h"
 
 #define _UI_TEMPORARY_STRING_BUFFER_SIZE 32
 #define _UI_BAR_PROPERTY_VALUE 0

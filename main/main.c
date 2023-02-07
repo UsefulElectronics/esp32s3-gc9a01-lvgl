@@ -45,9 +45,9 @@ void app_main(void)
 
 	displayConfig();
 
-	encoder_init(main_encoder_cb);
+//	encoder_init(main_encoder_cb);
 
-	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
+//	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
 	xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 }

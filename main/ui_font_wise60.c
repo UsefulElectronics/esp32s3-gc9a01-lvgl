@@ -4,7 +4,7 @@
  * Opts: --bpp 4 --size 60 --font C:\Users\WARD\Documents\SquareLine\assets\WISE.ttf -o C:\Users\WARD\Documents\SquareLine\assets\ui_font_wise60.c --format lvgl -r 0x20-0x7f --no-compress --no-prefilter
  ******************************************************************************/
 
-#include "ui.h"
+#include "lvgl_demo_ui.h"
 
 #ifndef UI_FONT_WISE60
 #define UI_FONT_WISE60 1
