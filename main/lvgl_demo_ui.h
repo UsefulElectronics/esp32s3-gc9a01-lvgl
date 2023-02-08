@@ -39,6 +39,7 @@ extern lv_obj_t * ui_Label3;
 
 LV_FONT_DECLARE(ui_font_wise60);
 
+LV_IMG_DECLARE(ui_img_1321029331);
 
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
