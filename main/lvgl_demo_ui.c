@@ -144,16 +144,19 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
     lv_obj_set_style_border_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_side(ui_Panel2, LV_BORDER_SIDE_FULL, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+
     ui_Arc2 = lv_arc_create(ui_Screen1);
     lv_obj_set_width(ui_Arc2, 240);
     lv_obj_set_height(ui_Arc2, 240);
     lv_obj_set_align(ui_Arc2, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Arc2, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
-    lv_arc_set_range(ui_Arc2, 0, 360);
-    lv_arc_set_value(ui_Arc2, 360);
+    lv_arc_set_range(ui_Arc2, 0, 100);
+    lv_arc_set_value(ui_Arc2, 100);
     lv_arc_set_bg_angles(ui_Arc2, 0, 360);
-    lv_arc_set_mode(ui_Arc2, LV_ARC_MODE_REVERSE);
+    lv_arc_set_mode(ui_Arc2, LV_ARC_MODE_NORMAL);
     lv_arc_set_rotation(ui_Arc2, 270);
+    lv_obj_set_style_arc_color(ui_Arc2, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(ui_Arc2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_set_style_arc_color(ui_Arc2, lv_color_hex(0xD20000), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_opa(ui_Arc2, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);

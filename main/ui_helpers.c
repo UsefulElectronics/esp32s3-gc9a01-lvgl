@@ -54,11 +54,55 @@ void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, 
     lv_scr_load_anim(target, fademode, spd, delay, false);
 }
 
-void _ui_arc_increment(lv_obj_t * target, int val)
+void _ui_arc_increment()
 {
-    int old = lv_arc_get_value(target);
-    lv_arc_set_value(target, old + val);
-    lv_event_send(target, LV_EVENT_VALUE_CHANGED, 0);
+	static uint16_t counter = 1;
+	static bool direction = true;
+
+	if(0 == counter)
+	{
+		direction = true;
+		_ui_arc_reverse();
+	}
+	else if(100 == counter)
+	{
+		direction = false;
+		_ui_arc_reverse();
+	}
+	switch (direction)
+	{
+		case true:
+			++counter;
+			break;
+		case false:
+			--counter;
+			break;
+
+	}
+//    int old = lv_arc_get_value(ui_Arc2);
+    lv_arc_set_value(ui_Arc2, counter);
+//    lv_event_send(ui_Arc2, LV_EVENT_VALUE_CHANGED, 0);
+}
+void _ui_arc_set(int val)
+{
+    lv_arc_set_value(ui_Arc2, val);
+}
+void _ui_arc_reverse()
+{
+	static bool mode = false;
+
+	if(mode)
+	{
+		lv_arc_set_mode(ui_Arc2, LV_ARC_MODE_NORMAL);
+	}
+	else
+	{
+		lv_arc_set_mode(ui_Arc2, LV_ARC_MODE_REVERSE);
+
+	}
+
+	//toggle mode
+	mode ^= true;
 }
 
 void _ui_bar_increment(lv_obj_t * target, int val, int anm)

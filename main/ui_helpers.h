@@ -38,7 +38,9 @@ void _ui_slider_set_property(lv_obj_t * target, int id, int val);
 
 void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay);
 
-void _ui_arc_increment(lv_obj_t * target, int val);
+void _ui_arc_increment();
+void _ui_arc_reverse();
+void _ui_arc_set(int val);
 
 void _ui_bar_increment(lv_obj_t * target, int val, int anm);
 

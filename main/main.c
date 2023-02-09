@@ -23,6 +23,7 @@
 #include "gc9a01.h"
 
 #include "lvgl_demo_ui.h"
+#include "ui_helpers.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -57,12 +58,18 @@ void app_main(void)
  */
 void lvgl_time_task(void* param)
 {
+	TickType_t xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
+
         // The task running lv_timer_handler should have lower priority than that running `lv_tick_inc`
         lv_timer_handler();
+
+        _ui_arc_increment();
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
-        vTaskDelay(pdMS_TO_TICKS(10));
+//        vTaskDelay(pdMS_TO_TICKS(10));
+
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(10) );
 
 	}
 }
