@@ -63,11 +63,13 @@ void _ui_arc_increment()
 	{
 		direction = true;
 		_ui_arc_reverse();
+		lv_label_set_text(ui_Label2, "15:10");
 	}
 	else if(100 == counter)
 	{
 		direction = false;
 		_ui_arc_reverse();
+		lv_label_set_text(ui_Label2, "15.10");
 	}
 	switch (direction)
 	{
