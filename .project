@@ -2404,6 +2404,31 @@
 			<location>C:/Espressif/frameworks/esp-idf-v5.0/components/esp_netif/lwip/netif/wlanif.c</location>
 		</link>
 		<link>
+			<name>build/ide/esp_idf_components/examples/common_components/protocol_examples_common/addr_from_stdin.c</name>
+			<type>1</type>
+			<location>C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common/addr_from_stdin.c</location>
+		</link>
+		<link>
+			<name>build/ide/esp_idf_components/examples/common_components/protocol_examples_common/connect.c</name>
+			<type>1</type>
+			<location>C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common/connect.c</location>
+		</link>
+		<link>
+			<name>build/ide/esp_idf_components/examples/common_components/protocol_examples_common/console_cmd.c</name>
+			<type>1</type>
+			<location>C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common/console_cmd.c</location>
+		</link>
+		<link>
+			<name>build/ide/esp_idf_components/examples/common_components/protocol_examples_common/stdin_out.c</name>
+			<type>1</type>
+			<location>C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common/stdin_out.c</location>
+		</link>
+		<link>
+			<name>build/ide/esp_idf_components/examples/common_components/protocol_examples_common/wifi_connect.c</name>
+			<type>1</type>
+			<location>C:/Espressif/frameworks/esp-idf-v5.0/examples/common_components/protocol_examples_common/wifi_connect.c</location>
+		</link>
+		<link>
 			<name>build/ide/esp_idf_components/fatfs/port/freertos/ffsystem.c</name>
 			<type>1</type>
 			<location>C:/Espressif/frameworks/esp-idf-v5.0/components/fatfs/port/freertos/ffsystem.c</location>

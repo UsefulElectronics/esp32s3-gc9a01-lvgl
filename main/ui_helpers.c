@@ -53,11 +53,24 @@ void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, 
 {
     lv_scr_load_anim(target, fademode, spd, delay, false);
 }
-
+/**
+ * @brief Seconds circle handler function
+ *
+ */
 void _ui_arc_increment()
 {
-	static uint16_t counter = 1;
+	static uint16_t counter = 0;
 	static bool direction = true;
+
+	switch (direction)
+	{
+		case true:
+			++counter;
+			break;
+		case false:
+			--counter;
+			break;
+	}
 
 	if(0 == counter)
 	{
@@ -71,16 +84,7 @@ void _ui_arc_increment()
 		_ui_arc_reverse();
 		lv_label_set_text(ui_Label2, "15.10");
 	}
-	switch (direction)
-	{
-		case true:
-			++counter;
-			break;
-		case false:
-			--counter;
-			break;
 
-	}
 //    int old = lv_arc_get_value(ui_Arc2);
     lv_arc_set_value(ui_Arc2, counter);
 //    lv_event_send(ui_Arc2, LV_EVENT_VALUE_CHANGED, 0);
@@ -107,6 +111,22 @@ void _ui_arc_reverse()
 	mode ^= true;
 }
 
+
+void _ui_text_wifiIndicate(bool connectionStatus)
+{
+	switch (connectionStatus)
+	{
+		case true:
+			lv_obj_set_style_text_color(ui_Label3, lv_color_hex(0xD20000), LV_PART_MAIN | LV_STATE_DEFAULT);
+			break;
+		case false:
+			lv_obj_set_style_text_color(ui_Label3, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+		break;
+		default:
+			break;
+	}
+
+}
 void _ui_bar_increment(lv_obj_t * target, int val, int anm)
 {
     int old = lv_bar_get_value(target);

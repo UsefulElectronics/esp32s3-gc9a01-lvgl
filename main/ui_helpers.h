@@ -42,6 +42,8 @@ void _ui_arc_increment();
 void _ui_arc_reverse();
 void _ui_arc_set(int val);
 
+void _ui_text_wifiIndicate(bool connectionStatus);
+
 void _ui_bar_increment(lv_obj_t * target, int val, int anm);
 
 void _ui_slider_increment(lv_obj_t * target, int val, int anm);
