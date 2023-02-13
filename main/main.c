@@ -56,11 +56,12 @@ void app_main(void)
 
 //	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
-
-
      xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 
-//     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 0);
+     //Wait for WiFi and MQTT broker connection to be established.
+     vTaskDelay(pdMS_TO_TICKS(15000));
+
+     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -109,7 +110,7 @@ static void mqtt_msg_pars_task(void* param)
 {
 	mqtt_buffer_t mqttBuffer = {0};
 
-	vTaskDelay(pdMS_TO_TICKS(1000));
+
 	while(1)
 	{
 		if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttBuffer, portMAX_DELAY))
