@@ -24,6 +24,7 @@
 
 #include "lvgl_demo_ui.h"
 #include "ui_helpers.h"
+#include "time.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -33,10 +34,12 @@ static const char *main = "main";
 /* MACROS --------------------------------------------------------------------*/
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
+static void time_config(void);
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
 static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
+
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
  * @brief 	Initialize system peripherals and create FreeRTOS tasks
@@ -60,6 +63,8 @@ void app_main(void)
 
      //Wait for WiFi and MQTT broker connection to be established.
      vTaskDelay(pdMS_TO_TICKS(15000));
+
+     time_config();
 
      xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 }
@@ -131,5 +136,21 @@ static void mqtt_msg_pars_task(void* param)
 			}
 		}
 	}
+}
+
+static void time_config(void)
+{
+	time_t now;
+	char strftime_buf[64];
+	struct tm timeinfo;
+
+	time(&now);
+	// Set timezone to China Standard Time
+	setenv("TZ", "UTC+3", 1);
+	tzset();
+
+	localtime_r(&now, &timeinfo);
+//	strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
+	ESP_LOGI(main, "%02d:%02d", timeinfo.tm_hour ,timeinfo.tm_min);
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

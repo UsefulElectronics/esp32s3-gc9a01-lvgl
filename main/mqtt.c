@@ -32,6 +32,8 @@ static const char *TAG = "MQTT";
 QueueHandle_t mqttSubscribe_queue;
 
 mqtt_buffer_t mqttSubscribeBuffer;
+
+static esp_mqtt_client_handle_t mqttClient = {0};
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -66,7 +68,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         mqttSubscribeBuffer.eventType = MQTT_BROKER_CONNECT;
 
         xQueueSendToBack(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY);
-//        esp_mqtt_client_subscribe(client, MQTT_SWITCH_TOPIC, 0);
+        esp_mqtt_client_subscribe(client, MQTT_TIMESTAMP_TOPIC, 0);
 //
 //        esp_mqtt_client_subscribe(client, MQTT_COLOR_TOPIC, 0);
 //
@@ -128,6 +130,20 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     memset(&mqttSubscribeBuffer, 0, sizeof(mqtt_buffer_t));
 }
 /**
+ * @brief
+ *
+ * @param topic
+ * @param data
+ * @param len
+ */
+void mqtt_publish(const char *topic, const char *data, int len)
+{
+	const uint8_t quelityOfServiceLevel = 0;
+	const uint8_t retainFeature        	= false;
+
+	esp_mqtt_client_publish(mqttClient, topic, data, len, (int) quelityOfServiceLevel, (int) retainFeature);
+}
+/**
  * @brief Start MQTT broker connection and register MQTT related events callback
  *
  */
@@ -143,6 +159,8 @@ void mqtt_app_start(void)
     memset(&mqttSubscribeBuffer, 0, sizeof(mqtt_buffer_t));
 
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+
+    memcpy(&mqttClient, &client, sizeof(esp_mqtt_client_handle_t));
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
 
