@@ -22,9 +22,13 @@
 
 #include "gc9a01.h"
 
+#include "sntp.h"
+
 #include "lvgl_demo_ui.h"
 #include "ui_helpers.h"
 #include "time.h"
+#include "esp_sntp.h"
+#include "lwip/ip_addr.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -39,6 +43,7 @@ static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
 static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
+static void time_handle_task(void* param);
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
@@ -64,9 +69,11 @@ void app_main(void)
      //Wait for WiFi and MQTT broker connection to be established.
      vTaskDelay(pdMS_TO_TICKS(15000));
 
-     time_config();
+     sntp_config();
 
      xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
+
+     xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -138,19 +145,18 @@ static void mqtt_msg_pars_task(void* param)
 	}
 }
 
-static void time_config(void)
+static void time_handle_task(void* param)
 {
-	time_t now;
-	char strftime_buf[64];
-	struct tm timeinfo;
+	struct tm  realTime = {0};
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	while(1)
+	{
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(1000) );
 
-	time(&now);
-	// Set timezone to China Standard Time
-	setenv("TZ", "UTC+3", 1);
-	tzset();
+		sntp_time_get(&realTime);
 
-	localtime_r(&now, &timeinfo);
-//	strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
-	ESP_LOGI(main, "%02d:%02d", timeinfo.tm_hour ,timeinfo.tm_min);
+		ESP_LOGI(main, "time %02d:%02d", realTime.tm_hour, realTime.tm_min);
+	}
 }
+
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
