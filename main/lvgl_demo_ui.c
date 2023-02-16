@@ -15,6 +15,7 @@ static lv_disp_t *lv_display;
 static lv_meter_indicator_t *indic;
 static lv_style_t bgStyle;
 
+watch_t realTime = {0};
 
 lv_obj_t * ui_Screen1;
 lv_obj_t * ui_Arc2;

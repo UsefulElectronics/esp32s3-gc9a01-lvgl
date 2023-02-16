@@ -5,6 +5,7 @@
 
 #include "ui_helpers.h"
 
+
 void _ui_bar_set_property(lv_obj_t * target, int id, int val)
 {
     if(id == _UI_BAR_PROPERTY_VALUE_WITH_ANIM) lv_bar_set_value(target, val, LV_ANIM_ON);
@@ -61,6 +62,11 @@ void _ui_arc_increment()
 {
 	static uint16_t counter = 0;
 	static bool direction = true;
+	static char timeString[6] = {0};
+
+	memcpy(timeString, &realTime.sel.hour,2);
+	timeString[2] = realTime.sel.semi;
+	memcpy(timeString + 3, &realTime.sel.minute,2);
 
 	switch (direction)
 	{
@@ -76,13 +82,17 @@ void _ui_arc_increment()
 	{
 		direction = true;
 		_ui_arc_reverse();
-		lv_label_set_text(ui_Label2, "15:10");
+		realTime.sel.semi = ':';
+		lv_label_set_text(ui_Label2, timeString);
+//		lv_label_set_text(ui_Label2, "15:10");
 	}
 	else if(100 == counter)
 	{
 		direction = false;
 		_ui_arc_reverse();
-		lv_label_set_text(ui_Label2, "15.10");
+		realTime.sel.semi = '.';
+
+		lv_label_set_text(ui_Label2, timeString);
 	}
 
 //    int old = lv_arc_get_value(ui_Arc2);

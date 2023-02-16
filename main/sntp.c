@@ -46,7 +46,7 @@ void sntp_config(void)
     time(&now);
 
 	// Set timezone to China Standard Time
-	setenv("TZ", "UTC+3", 1);
+	setenv("TZ", "UTC-3", 1);
 	tzset();
 	char buff[INET6_ADDRSTRLEN];
 //	ip_addr_t addr;

@@ -147,15 +147,32 @@ static void mqtt_msg_pars_task(void* param)
 
 static void time_handle_task(void* param)
 {
-	struct tm  realTime = {0};
+	struct tm  Time = {0};
+	char tempString[3] = {0};
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(1000) );
 
-		sntp_time_get(&realTime);
+		sntp_time_get(&Time);
 
-		ESP_LOGI(main, "time %02d:%02d", realTime.tm_hour, realTime.tm_min);
+		sprintf(tempString,"%02d",Time.tm_hour);
+
+		realTime.sel.hour = (tempString[1] << 8);
+		realTime.sel.hour |= (tempString[0]);
+
+		sprintf(tempString,"%02d",Time.tm_min);
+
+		realTime.sel.minute = (tempString[1] << 8);
+		realTime.sel.minute |= (tempString[0]);
+
+
+
+//		 realTime.sel.hour   = Time.tm_hour;
+//
+//		 realTime.sel.minute = Time.tm_min;
+
+		ESP_LOGI(main, "time %02d:%02d", Time.tm_hour , Time.tm_min);
 	}
 }
 

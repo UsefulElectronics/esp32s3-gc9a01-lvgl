@@ -24,7 +24,17 @@
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
-
+typedef union
+{
+	char time[6];
+	struct
+	{
+		uint16_t hour;
+		uint8_t  semi;
+		uint16_t minute;
+		uint8_t  reserved;
+	}sel;
+}watch_t;
 /* VARIABLES -----------------------------------------------------------------*/
 extern lv_obj_t * ui_Screen1;
 extern lv_obj_t * ui_Arc2;
@@ -33,7 +43,7 @@ extern lv_obj_t * ui_Panel1;
 extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Label3;
 
-
+extern watch_t realTime;
 
 
 
