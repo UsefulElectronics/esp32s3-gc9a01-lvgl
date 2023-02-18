@@ -121,6 +121,11 @@ void _ui_arc_reverse()
 	mode ^= true;
 }
 
+void _ui_temp_set(char* tempString)
+{
+	lv_label_set_text(ui_Label4, tempString);
+}
+
 
 void _ui_text_wifiIndicate(bool connectionStatus)
 {

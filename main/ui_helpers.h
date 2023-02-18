@@ -41,6 +41,7 @@ void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, 
 void _ui_arc_increment();
 void _ui_arc_reverse();
 void _ui_arc_set(int val);
+void _ui_temp_set(char* tempString);
 
 void _ui_text_wifiIndicate(bool connectionStatus);
 

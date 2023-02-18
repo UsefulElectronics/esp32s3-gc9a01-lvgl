@@ -21,6 +21,7 @@
 #include "wifi_connect.h"
 #include "mqtt.h"
 #include <stdio.h>
+#include <ctype.h>
 /* MACROS --------------------------------------------------------------------*/
 
 /* ENUMORATIONS --------------------------------------------------------------*/

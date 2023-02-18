@@ -42,8 +42,10 @@ extern lv_obj_t * ui_Panel2;
 extern lv_obj_t * ui_Panel1;
 extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Label3;
+extern lv_obj_t * ui_Label4;
 
 extern watch_t realTime;
+
 
 
 

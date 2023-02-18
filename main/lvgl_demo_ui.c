@@ -17,12 +17,14 @@ static lv_style_t bgStyle;
 
 watch_t realTime = {0};
 
+
 lv_obj_t * ui_Screen1;
 lv_obj_t * ui_Arc2;
 lv_obj_t * ui_Panel2;
 lv_obj_t * ui_Panel1;
 lv_obj_t * ui_Label2;
 lv_obj_t * ui_Label3;
+lv_obj_t * ui_Label4;
 
 lv_obj_t *tv1;
 lv_obj_t *tv2;
@@ -213,4 +215,15 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
     lv_label_set_text_static(ui_Label3, LV_SYMBOL_WIFI);
     lv_obj_set_style_text_color(ui_Label3, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Label4 = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Label4, 0);
+    lv_obj_set_y(ui_Label4, 41);
+    lv_obj_set_align(ui_Label4, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Label4, "12 °C");
+    lv_obj_set_style_text_color(ui_Label4, lv_color_hex(0xD50000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Label4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_Label4, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
 }

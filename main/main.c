@@ -40,6 +40,7 @@ static const char *main = "main";
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
+static void main_tempretureStringPrepare(char* tempString, char* targetString);
 static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
@@ -123,6 +124,7 @@ static void mqtt_msg_pars_task(void* param)
 	mqtt_buffer_t mqttBuffer = {0};
 
 
+
 	while(1)
 	{
 		if(xQueueReceive(mqttSubscribe_queue, (void *)&mqttBuffer, portMAX_DELAY))
@@ -136,6 +138,11 @@ static void mqtt_msg_pars_task(void* param)
 					_ui_text_wifiIndicate(false);
 					break;
 				case MQTT_TOPIC_DATA_RX:
+					char targetString[7] = {0};
+
+					main_tempretureStringPrepare(mqttBuffer.data, targetString);
+
+					_ui_temp_set(targetString);
 
 					break;
 				default:
@@ -166,14 +173,28 @@ static void time_handle_task(void* param)
 		realTime.sel.minute = (tempString[1] << 8);
 		realTime.sel.minute |= (tempString[0]);
 
-
-
-//		 realTime.sel.hour   = Time.tm_hour;
-//
-//		 realTime.sel.minute = Time.tm_min;
-
-		ESP_LOGI(main, "time %02d:%02d", Time.tm_hour , Time.tm_min);
 	}
+}
+/**
+ * @brief 	Create a proper temperature value showing string
+ *
+ * @param 	tempString	:	string received over MQTT
+ *
+ * @param 	targetString:	string to copy the formed string to
+ */
+static void main_tempretureStringPrepare(char* tempString, char* targetString)
+{
+	const char tempUnit[4] 		= " °C";
+	const char tempStingLength 	= 3;
+	for(uint8_t i = 0; i < tempStingLength; ++i)
+	{
+		if(!isalnum((int)tempString[i]))
+		{
+			strcpy(&tempString[i], tempUnit);
+		}
+	}
+	strcpy(targetString,tempString);
+
 }
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
