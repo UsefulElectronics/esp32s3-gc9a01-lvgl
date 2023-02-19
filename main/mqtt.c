@@ -68,7 +68,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         mqttSubscribeBuffer.eventType = MQTT_BROKER_CONNECT;
 
         xQueueSendToBack(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY);
-        esp_mqtt_client_subscribe(client, MQTT_TIMESTAMP_TOPIC, 0);
+        esp_mqtt_client_subscribe(client, MQTT_TEMPERATURE_TOPIC, 0);
 //
 //        esp_mqtt_client_subscribe(client, MQTT_COLOR_TOPIC, 0);
 //
@@ -130,11 +130,13 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     memset(&mqttSubscribeBuffer, 0, sizeof(mqtt_buffer_t));
 }
 /**
- * @brief
+ * @brief Publish data to a specific topic over MQTT
  *
- * @param topic
- * @param data
- * @param len
+ * @param topic	:	to publish data to
+ *
+ * @param data	:	pointer to the data to be sent
+ *
+ * @param len	:	number of bytes to be sent over publish request
  */
 void mqtt_publish(const char *topic, const char *data, int len)
 {

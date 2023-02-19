@@ -33,6 +33,7 @@
 
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *main = "main";
+char targetString[10] = {0};
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -56,8 +57,6 @@ void app_main(void)
 	gc9a01_displayInit();
 
 	displayConfig();
-
-
 
 //	encoder_init(main_encoder_cb);
 
@@ -123,7 +122,7 @@ static void mqtt_msg_pars_task(void* param)
 {
 	mqtt_buffer_t mqttBuffer = {0};
 
-
+	const char publishRequest = 1;
 
 	while(1)
 	{
@@ -133,12 +132,14 @@ static void mqtt_msg_pars_task(void* param)
 			{
 				case MQTT_BROKER_CONNECT:
 					_ui_text_wifiIndicate(true);
+
+					mqtt_publish(MQTT_REQUEST_TOPIC, &publishRequest, 1);
 					break;
 				case MQTT_BROKER_DISCONNECT:
 					_ui_text_wifiIndicate(false);
 					break;
 				case MQTT_TOPIC_DATA_RX:
-					char targetString[7] = {0};
+
 
 					main_tempretureStringPrepare(mqttBuffer.data, targetString);
 
@@ -155,8 +156,16 @@ static void mqtt_msg_pars_task(void* param)
 static void time_handle_task(void* param)
 {
 	struct tm  Time = {0};
+
 	char tempString[3] = {0};
+
 	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+	const uint32_t tempUpdatePeriod = 60 * 60; //1 hour
+
+	static uint32_t tempUpdateCounter = 0;
+
+	const char publishRequest = 1;
 	while(1)
 	{
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(1000) );
@@ -172,6 +181,15 @@ static void time_handle_task(void* param)
 
 		realTime.sel.minute = (tempString[1] << 8);
 		realTime.sel.minute |= (tempString[0]);
+
+		++tempUpdateCounter;
+
+		if(tempUpdatePeriod <= tempUpdateCounter)
+		{
+			mqtt_publish(MQTT_REQUEST_TOPIC, &publishRequest, 1);
+
+			tempUpdateCounter = 0;
+		}
 
 	}
 }
@@ -191,9 +209,13 @@ static void main_tempretureStringPrepare(char* tempString, char* targetString)
 		if(!isalnum((int)tempString[i]))
 		{
 			strcpy(&tempString[i], tempUnit);
+			break;
 		}
 	}
+
 	strcpy(targetString,tempString);
+
+	targetString[6] = 0;
 
 }
 

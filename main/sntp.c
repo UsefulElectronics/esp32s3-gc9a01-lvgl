@@ -49,33 +49,14 @@ void sntp_config(void)
 	setenv("TZ", "UTC-3", 1);
 	tzset();
 	char buff[INET6_ADDRSTRLEN];
-//	ip_addr_t addr;
+
 	sntp_setoperatingmode(SNTP_OPMODE_POLL);
 	sntp_setservername(0, "pool.ntp.org");
 	ip_addr_t const *ip = sntp_getserver(0);
 	ipaddr_ntoa_r(ip, buff, INET6_ADDRSTRLEN);
-//	inet_pton(AF_INET, "pool.ntp.org",&addr);
-//	sntp_setserver(0,&addr);
+
 	sntp_init();
 
-//    if (sntp_get_sync_mode() == SNTP_SYNC_MODE_SMOOTH)
-//    {
-//        struct timeval outdelta;
-//        while (sntp_get_sync_status() == SNTP_SYNC_STATUS_IN_PROGRESS)
-//        {
-//            adjtime(NULL, &outdelta);
-//            ESP_LOGI(sntp, "Waiting for adjusting time ... outdelta = %jd sec: %li ms: %li us",
-//                        (intmax_t)outdelta.tv_sec,
-//                        outdelta.tv_usec/1000,
-//                        outdelta.tv_usec%1000);
-//            vTaskDelay(2000 / portTICK_PERIOD_MS);
-//        }
-//    }
-
-//    while (esp_netif_sntp_sync_wait(2000 / portTICK_PERIOD_MS) == ESP_ERR_TIMEOUT && ++retry < retry_count)
-//    {
-//        ESP_LOGI(sntp, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
-//    }
 
 
 }

@@ -43,7 +43,7 @@ extern QueueHandle_t mqttSubscribe_queue;
 #define MQTT_SWITCH_TOPIC 		"switch"
 #define MQTT_FREQUENCY_TOPIC 	"lampFreq"
 #define MQTT_REQUEST_TOPIC 		"request"
-#define MQTT_TIMESTAMP_TOPIC	"timeStamp"
+#define MQTT_TEMPERATURE_TOPIC	"temperature"
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 typedef enum
