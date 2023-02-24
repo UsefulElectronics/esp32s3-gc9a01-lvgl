@@ -89,51 +89,6 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
 	lv_obj_add_style(ui_Screen1, &bgStyle, 0);
 	lv_style_set_bg_color(&bgStyle, bgColor);
 
-//    meter = lv_meter_create(ui_Screen1);
-//    lv_obj_center(meter);
-//    lv_obj_set_size(meter, 200, 200);
-//
-//    /*Add a scale first*/
-//    lv_meter_scale_t *scale = lv_meter_add_scale(meter);
-//    lv_meter_set_scale_ticks(meter, scale, 41, 2, 10, lv_palette_main(LV_PALETTE_GREY));
-//    lv_meter_set_scale_major_ticks(meter, scale, 8, 4, 15, lv_color_black(), 10);
-//
-//
-//
-//    /*Add a blue arc to the start*/
-//    indic = lv_meter_add_arc(meter, scale, 3, lv_palette_main(LV_PALETTE_BLUE), 0);
-//    lv_meter_set_indicator_start_value(meter, indic, 0);
-//    lv_meter_set_indicator_end_value(meter, indic, 20);
-//
-//    /*Make the tick lines blue at the start of the scale*/
-//    indic = lv_meter_add_scale_lines(meter, scale, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_BLUE), false, 0);
-//    lv_meter_set_indicator_start_value(meter, indic, 0);
-//    lv_meter_set_indicator_end_value(meter, indic, 20);
-//
-//    /*Add a red arc to the end*/
-//    indic = lv_meter_add_arc(meter, scale, 3, lv_palette_main(LV_PALETTE_RED), 0);
-//    lv_meter_set_indicator_start_value(meter, indic, 80);
-//    lv_meter_set_indicator_end_value(meter, indic, 100);
-//
-//    /*Make the tick lines red at the end of the scale*/
-//    indic = lv_meter_add_scale_lines(meter, scale, lv_palette_main(LV_PALETTE_RED), lv_palette_main(LV_PALETTE_RED), false, 0);
-//    lv_meter_set_indicator_start_value(meter, indic, 80);
-//    lv_meter_set_indicator_end_value(meter, indic, 100);
-//
-//    /*Add a needle line indicator*/
-//    indic = lv_meter_add_needle_line(meter, scale, 4, lv_palette_main(LV_PALETTE_GREY), -10);
-//
-//    btn = lv_btn_create(ui_Screen1);
-//    lv_obj_t * lbl = lv_label_create(btn);
-//    lv_label_set_text_static(lbl, LV_SYMBOL_REFRESH" ROTATE");
-//    lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 00, -10);
-
-
-
-////    ui_Screen1 = lv_obj_create(tv1);
-//    lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-//
-
     ui_Panel2 = lv_obj_create(ui_Screen1);
     lv_obj_set_width(ui_Panel2, 220);
     lv_obj_set_height(ui_Panel2, 220);
@@ -142,10 +97,24 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
     lv_obj_set_style_radius(ui_Panel2, 360, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_Panel2, lv_color_hex(0x0E0303), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(ui_Panel2, &ui_img_1321029331, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(ui_Panel2, &ui_img_patern3_png, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_tiled(ui_Panel2, true, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_color(ui_Panel2, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_side(ui_Panel2, LV_BORDER_SIDE_FULL, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+//    ui_Panel2 = lv_obj_create(ui_Screen1);
+//    lv_obj_set_width(ui_Panel2, 220);
+//    lv_obj_set_height(ui_Panel2, 220);
+//    lv_obj_set_align(ui_Panel2, LV_ALIGN_CENTER);
+//    lv_obj_clear_flag(ui_Panel2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+//    lv_obj_set_style_radius(ui_Panel2, 360, LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_color(ui_Panel2, lv_color_hex(0x0E0303), LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_bg_img_src(ui_Panel2, &ui_img_1321029331, LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_border_color(ui_Panel2, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_border_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+//    lv_obj_set_style_border_side(ui_Panel2, LV_BORDER_SIDE_FULL, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
     ui_Arc2 = lv_arc_create(ui_Screen1);

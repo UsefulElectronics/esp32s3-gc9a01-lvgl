@@ -45,7 +45,7 @@ void sntp_config(void)
 
     time(&now);
 
-	// Set timezone to China Standard Time
+	// Set timezone to Turkey Standard Time
 	setenv("TZ", "UTC-3", 1);
 	tzset();
 	char buff[INET6_ADDRSTRLEN];
