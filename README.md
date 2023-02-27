@@ -6,7 +6,7 @@
 ### PCBWay
 Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the link below:
 
-[<img src="https://github.com/UsefulElectronics/esp32s3_la66_lorawan/blob/main/repo%20cover/banner320x100.gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
+[<img src="https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/banner/banner(320x100).gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
 
 ***
 
@@ -33,7 +33,7 @@ SNTP is used in order to get real time data over TCP connection with WiFi. The M
 Temperature data, on the other hand, is obtained over MQTT connection with Node-Red that is running on a raspberry pi, Which takes a request from an MQTT topic to send HTTP GET request OpenWeather API to obtain weather related string and then filter out the JSON file to get only the temperature data to publish it to an MQTT topic that the ESP32S3 is subscribed to.
 
 Every part regarding the user interface design is also explained in details using SquareLine Studio.
-![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/circuit%20diagram.png)
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/circuit%20diagram.PNG)
 ***
 
 
