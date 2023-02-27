@@ -52,8 +52,8 @@ extern watch_t realTime;
 LV_FONT_DECLARE(ui_font_wise60);
 LV_FONT_DECLARE(lv_font_montserrat_20);
 
-//LV_IMG_DECLARE(ui_img_1321029331);
-LV_IMG_DECLARE(ui_img_patern3_png);
+LV_IMG_DECLARE(ui_img_1321029331);
+//LV_IMG_DECLARE(ui_img_patern3_png);
 
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/

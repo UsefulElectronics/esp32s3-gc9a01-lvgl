@@ -22,6 +22,22 @@ The working principle of rotary encoder and involved hardware is explained in de
 ![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/cover1.png)
 ***
 
+# ESP32S3 GC9A01 LVGL Smart Watch
+***
+### [Tutorial Link](https://youtu.be/Td08fweKXwY) On [![Build Status](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/wardzx1) 
+
+In this tutorial, ESP32S3 MCU is used to display time and temperature data on a round display with a nice looking user interface that is designed using LVGL library with the help of Squareline Studio.
+
+SNTP is used in order to get real time data over TCP connection with WiFi. The MCU processes the data and prints it on the GC9A01 display that is interfaced over SPI protocol.
+
+Temperature data, on the other hand, is obtained over MQTT connection with Node-Red that is running on a raspberry pi, Which takes a request from an MQTT topic to send HTTP GET request OpenWeather API to obtain weather related string and then filter out the JSON file to get only the temperature data to publish it to an MQTT topic that the ESP32S3 is subscribed to.
+
+Every part regarding the user interface design is also explained in details using SquareLine Studio.
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/circuit%20diagram.png)
+***
+
+
+
 | Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- | -------- |
 
@@ -110,11 +126,3 @@ I (619) example: Install LVGL tick timer
 I (619) example: Display LVGL Meter Widget
 ...
 ```
-
-
-## Troubleshooting
-
-* Why the LCD doesn't light up?
-  * Check the backlight's turn-on level, and update it in `EXAMPLE_LCD_BK_LIGHT_ON_LEVEL`
-
-For any technical queries, please open an [issue] (https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
