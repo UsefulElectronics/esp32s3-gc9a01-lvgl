@@ -1,2 +1,12 @@
 build/
 components/
+managed_components/
+
+sdkconfig
+sdkconfig.old
+sdkconfig.defaults
+
+.project
+.cproject
+main/.cproject
+main/.project
