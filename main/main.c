@@ -29,6 +29,8 @@
 #include "time.h"
 #include "esp_sntp.h"
 #include "lwip/ip_addr.h"
+#include "uart_config.h"
+#include "hlk-ld1125h.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -58,6 +60,9 @@ void app_main(void)
 
 	displayConfig();
 
+	uart_config();
+
+
 //	encoder_init(main_encoder_cb);
 
 	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
@@ -74,6 +79,10 @@ void app_main(void)
      xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 
      xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
+
+     xTaskCreatePinnedToCore(uart_event_task, "uart event", 10000, NULL, 4, NULL, 0);
+
+     xTaskCreatePinnedToCore(uart_transmission_task, "USART TX handling task", 10000, NULL, 4, NULL, 0);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -104,6 +113,28 @@ void lvgl_time_task(void* param)
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus)
 {
 	set_value((int32_t) knobPosition, knobButtonStatus);
+}
+
+static void uart_reception_task(void *pvParameters)
+{
+   uartHandler_t uartHandler = {0};
+
+   uint8_t movementType = 0;
+
+   uint16_t detectedDistance = 0;
+   for(;;)
+   {
+      //Waiting for UART packet to get received.
+      if(xQueueReceive(uartRxStore_queue, (void * )&uartHandler, portMAX_DELAY))
+      {
+    	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer, &movementType);
+
+    	  if(-1 != detectedDistance)
+    	  {
+    		  ESP_LOGI(main, "dis = %d", detectedDistance);
+    	  }
+      }
+   }
 }
 /**
  * @brief Initialize WiFi and connect to The configured WiFi network. and then connect to the MQTT broker

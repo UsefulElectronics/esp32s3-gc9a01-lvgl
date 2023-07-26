@@ -38,7 +38,7 @@
  * @param packet The input packet from which the distance is to be extracted.
  * @param packet_type The character array where the packet type will be stored.
  *
- * @return The extracted distance value as a floating-point number, or -1.0 if the distance value is not found.
+ * @return The extracted distance value as a number in cm, or -1 if the distance value is not found.
  *
  * @note The packet_type array should be large enough to store the packet type (e.g., "mov" or "occ") and null-terminated.
  * @note The packet should have the format "packet_type, dis=distance_value" for successful extraction.
@@ -50,18 +50,34 @@
  * printf("Received packet type: %s, Distance: %.2f\n", packet_type, distance);
  * @endcode
  */
-float hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
+uint16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
 {
-    char* distance_str = strstr(packet, "dis=");
-    if (distance_str != NULL) {
-        float distance;
+    char* distance_str = strstr(packet, DESTINATION_PACK);
+
+    if (distance_str != NULL)
+    {
+        float 		distance;
+        uint16_t 	cmDistance;
+
         sscanf(distance_str + 4, "%f", &distance);
+        //Convert designates to cm value
+        cmDistance = (uint16_t) distance * 100;
         // Get the packet type (mov or occ)
         strncpy(packet_type, packet, distance_str - packet - 2);
+
+        if(memcmp(packet, MOVEMENT_OCC, sizeof(MOVEMENT_OCC)))
+        {
+        	*packet = occ;
+        }
+        else if(memcmp(packet, MOVEMENT_MOV, sizeof(MOVEMENT_MOV)))
+        {
+        	*packet = mov;
+        }
+
         packet_type[distance_str - packet - 2] = '\0';
-        return distance;
+        return cmDistance;
     }
-    return -1.0; // Return -1.0 if distance value not found
+    return -1; // Return -1.0 if distance value not found
 }
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
