@@ -16,7 +16,7 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "hlk-ld1125h.h"
-
+#include "stdbool.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/
@@ -50,9 +50,9 @@
  * printf("Received packet type: %s, Distance: %.2f\n", packet_type, distance);
  * @endcode
  */
-uint16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
+int16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
 {
-    char* distance_str = strstr(packet, DESTINATION_PACK);
+    char* distance_str = strstr((char *)packet, DESTINATION_PACK);
 
     if (distance_str != NULL)
     {
@@ -61,20 +61,19 @@ uint16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
 
         sscanf(distance_str + 4, "%f", &distance);
         //Convert designates to cm value
-        cmDistance = (uint16_t) distance * 100;
+        cmDistance = (uint16_t) (distance * 100);
         // Get the packet type (mov or occ)
-        strncpy(packet_type, packet, distance_str - packet - 2);
 
-        if(memcmp(packet, MOVEMENT_OCC, sizeof(MOVEMENT_OCC)))
+        if(false == memcmp(packet, MOVEMENT_OCC, 3))
         {
-        	*packet = occ;
+        	*packet_type = occ;
         }
-        else if(memcmp(packet, MOVEMENT_MOV, sizeof(MOVEMENT_MOV)))
+        else if(false == memcmp(packet, MOVEMENT_MOV,3))
         {
-        	*packet = mov;
+        	*packet_type = mov;
         }
 
-        packet_type[distance_str - packet - 2] = '\0';
+//        packet_type[distance_str - packet - 2] = '\0';
         return cmDistance;
     }
     return -1; // Return -1.0 if distance value not found

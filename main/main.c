@@ -48,6 +48,7 @@ static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
 static void time_handle_task(void* param);
+static void uart_reception_task(void *param);
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
@@ -83,6 +84,8 @@ void app_main(void)
      xTaskCreatePinnedToCore(uart_event_task, "uart event", 10000, NULL, 4, NULL, 0);
 
      xTaskCreatePinnedToCore(uart_transmission_task, "USART TX handling task", 10000, NULL, 4, NULL, 0);
+
+     xTaskCreatePinnedToCore(uart_reception_task, "USART RX handling task", 10000, NULL, 4, NULL, 0);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -115,23 +118,23 @@ static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus)
 	set_value((int32_t) knobPosition, knobButtonStatus);
 }
 
-static void uart_reception_task(void *pvParameters)
+static void uart_reception_task(void *param)
 {
    uartHandler_t uartHandler = {0};
 
    uint8_t movementType = 0;
 
-   uint16_t detectedDistance = 0;
+   int16_t detectedDistance = 0;
    for(;;)
    {
       //Waiting for UART packet to get received.
       if(xQueueReceive(uartRxStore_queue, (void * )&uartHandler, portMAX_DELAY))
       {
-    	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer, &movementType);
+    	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer,(uint8_t*) &movementType);
 
     	  if(-1 != detectedDistance)
     	  {
-    		  ESP_LOGI(main, "dis = %d", detectedDistance);
+    		  ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
     	  }
       }
    }

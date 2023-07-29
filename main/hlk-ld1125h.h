@@ -58,7 +58,7 @@ typedef enum
  * printf("Received packet type: %s, Distance: %.2f\n", packet_type, distance);
  * @endcode
  */
-uint16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type);
+int16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type);
 
 
 #endif /* MAIN_HLK_LD1125H_H_ */
