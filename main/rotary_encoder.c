@@ -64,7 +64,7 @@ void encoder_handler_task(void *param)
 
         pcnt_unit_get_count(pcnt_unit, &pulse_count);
 
-        encoderButon = gpio_get_level(KNOB_BUTTON);
+//        encoderButon = gpio_get_level(KNOB_BUTTON);
 
         hEncoder.callback(pulse_count + pulse_offest, encoderButon);
 
@@ -84,11 +84,11 @@ void encoder_init(void* callback)
         .low_limit = EXAMPLE_PCNT_LOW_LIMIT,
     };
 
-    gpio_config_t knob_button_config = {
-        .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = 1ULL << KNOB_BUTTON
-    };
-    ESP_ERROR_CHECK(gpio_config(&knob_button_config));
+//    gpio_config_t knob_button_config = {
+//        .mode = GPIO_MODE_INPUT,
+//        .pin_bit_mask = 1ULL << KNOB_BUTTON
+//    };
+//    ESP_ERROR_CHECK(gpio_config(&knob_button_config));
 
 
     ESP_ERROR_CHECK(pcnt_new_unit(&unit_config, &pcnt_unit));

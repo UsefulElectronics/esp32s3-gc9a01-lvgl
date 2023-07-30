@@ -18,8 +18,8 @@
 
 
 /* INCLUDES ------------------------------------------------------------------*/
-#include "wifi_connect.h"
-#include "mqtt.h"
+#include "wireless/wifi_connect.h"
+#include "wireless/mqtt.h"
 #include <stdio.h>
 #include <ctype.h>
 /* MACROS --------------------------------------------------------------------*/

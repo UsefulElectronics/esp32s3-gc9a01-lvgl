@@ -25,6 +25,8 @@
 
 #define MOVEMENT_OCC			"occ"
 #define MOVEMENT_MOV			"mov"
+
+#define MOVEMENT_STRING_SIZE	3
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/

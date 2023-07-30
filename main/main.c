@@ -18,19 +18,20 @@
 #include "main.h"
 #include "rotary_encoder.h"
 
-#include "display.h"
+#include "display/display.h"
 
-#include "gc9a01.h"
+#include "display/gc9a01.h"
 
-#include "sntp.h"
+#include "wireless/sntp.h"
 
-#include "lvgl_demo_ui.h"
-#include "ui_helpers.h"
+#include "display/lvgl_demo_ui.h"
+#include "display/ui_helpers.h"
 #include "time.h"
-#include "esp_sntp.h"
+
 #include "lwip/ip_addr.h"
 #include "uart_config.h"
 #include "hlk-ld1125h.h"
+#include "gpio/gpio_config.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 /* VARIABLES -----------------------------------------------------------------*/

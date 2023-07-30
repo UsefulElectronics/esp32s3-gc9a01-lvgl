@@ -64,11 +64,11 @@ int16_t hlk_ld1125h_parse_packet(const uint8_t* packet, uint8_t* packet_type)
         cmDistance = (uint16_t) (distance * 100);
         // Get the packet type (mov or occ)
 
-        if(false == memcmp(packet, MOVEMENT_OCC, 3))
+        if(false == memcmp(packet, MOVEMENT_OCC, MOVEMENT_STRING_SIZE))
         {
         	*packet_type = occ;
         }
-        else if(false == memcmp(packet, MOVEMENT_MOV,3))
+        else if(false == memcmp(packet, MOVEMENT_MOV, MOVEMENT_STRING_SIZE))
         {
         	*packet_type = mov;
         }
