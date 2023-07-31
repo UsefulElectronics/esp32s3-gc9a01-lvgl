@@ -4,6 +4,7 @@ SRCS "main.c"
 
 "uart_config.c" 
 "hlk-ld1125h.c"
+"button.c"
 SRCS "wireless/sntp.c"
 SRCS "wireless/mqtt.c"
 SRCS "wireless/wifi_connect.c"
