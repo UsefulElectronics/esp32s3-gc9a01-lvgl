@@ -1,10 +1,11 @@
 idf_component_register(
 SRCS "main.c" 
-"rotary_encoder.c" 
+SRCS "uart_config.c" 
+SRCS "esp_interrupt.c" 
 
-"uart_config.c" 
-"hlk-ld1125h.c"
-"button.c"
+SRCS "hardware/rotary_encoder.c" 
+SRCS "hardware/hlk-ld1125h.c"
+SRCS "hardware/button.c"
 SRCS "wireless/sntp.c"
 SRCS "wireless/mqtt.c"
 SRCS "wireless/wifi_connect.c"

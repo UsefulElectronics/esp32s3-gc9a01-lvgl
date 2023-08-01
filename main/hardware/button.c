@@ -95,7 +95,7 @@ bool button_debounce(uint8_t pin)
 			level = start_boundry;
 		}
 	}
-	if(level >= 4000)
+	if(level >= end_boundry)
 	{
 		level = end_boundry;
 		ret = ENABLE;

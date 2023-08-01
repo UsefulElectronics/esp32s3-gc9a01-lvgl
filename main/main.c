@@ -16,21 +16,26 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "main.h"
-#include "rotary_encoder.h"
+#include "uart_config.h"
+#include "esp_interrupt.h"
+
+#include "hardware/rotary_encoder.h"
+#include "hardware/hlk-ld1125h.h"
+#include "hardware/button.h"
+#include "hardware/hlk-ld1125h.h"
 
 #include "display/display.h"
-
 #include "display/gc9a01.h"
+#include "display/lvgl_demo_ui.h"
+#include "display/ui_helpers.h"
 
 #include "wireless/sntp.h"
 
-#include "display/lvgl_demo_ui.h"
-#include "display/ui_helpers.h"
+
 #include "time.h"
 
 #include "lwip/ip_addr.h"
-#include "uart_config.h"
-#include "hlk-ld1125h.h"
+
 #include "gpio/gpio_config.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
@@ -63,6 +68,8 @@ void app_main(void)
 	displayConfig();
 
 	uart_config();
+
+	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
 
 //	encoder_init(main_encoder_cb);

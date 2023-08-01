@@ -61,7 +61,7 @@ void button_init(uint8_t pin, uint32_t debounce_time_ms, uint32_t long_press_tim
 void button_update(uint32_t tick_value);
 
 bool button_debounce(uint32_t tick_value, uint8_t pin);
-//button debounce
+
 
 //Button action click double click long press
 
