@@ -8,6 +8,10 @@
 
 #include "lvgl_demo_ui.h"
 
+
+static void ui_radar_screen_init(void);
+static void ui_watch_screen_init(void);
+
 static lv_obj_t *meter;
 static lv_obj_t * btn;
 static lv_disp_rot_t rotation = LV_DISP_ROT_NONE;
@@ -17,7 +21,7 @@ static lv_style_t bgStyle;
 
 watch_t realTime = {0};
 
-
+//Smart watch screen
 lv_obj_t * ui_Screen1;
 lv_obj_t * ui_Arc2;
 lv_obj_t * ui_Panel2;
@@ -25,6 +29,14 @@ lv_obj_t * ui_Panel1;
 lv_obj_t * ui_Label2;
 lv_obj_t * ui_Label3;
 lv_obj_t * ui_Label4;
+
+//Radar Screen
+lv_obj_t * ui_radar;
+lv_obj_t * ui_Panel6;
+lv_obj_t * ui_Arc3;
+lv_obj_t * ui_Panel7;
+lv_obj_t * ui_Distance;
+lv_obj_t * ui_MovementType;
 
 lv_obj_t *tv1;
 lv_obj_t *tv2;
@@ -82,12 +94,96 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
 	dis = lv_tileview_create(scr);
 	lv_obj_align(dis, LV_ALIGN_TOP_RIGHT, 0, 0);
 
-	ui_Screen1 = lv_tileview_add_tile(dis, 0, 0, LV_DIR_HOR);
-	tv2 = lv_tileview_add_tile(dis, 0, 1, LV_DIR_HOR);
-	tv3 = lv_tileview_add_tile(dis, 0, 2, LV_DIR_HOR);
+	ui_radar 	= lv_tileview_add_tile(dis, 0, 0, LV_DIR_HOR);
+	ui_Screen1 	= lv_tileview_add_tile(dis, 0, 1, LV_DIR_HOR);
 
-	lv_obj_add_style(ui_Screen1, &bgStyle, 0);
+	tv3 		= lv_tileview_add_tile(dis, 0, 2, LV_DIR_HOR);
+
+//	lv_obj_add_style(ui_Screen1, &bgStyle, 0);
+//	lv_style_set_bg_color(&bgStyle, bgColor);
+
+	lv_obj_add_style(ui_radar, &bgStyle, 0);
 	lv_style_set_bg_color(&bgStyle, bgColor);
+
+	ui_radar_screen_init();
+}
+
+static void ui_radar_screen_init(void)
+{
+
+//	ui_radar = lv_obj_create(NULL);
+	lv_obj_clear_flag(ui_radar, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+
+	ui_Panel6 = lv_obj_create(ui_radar);
+	lv_obj_set_width(ui_Panel6, 220);
+	lv_obj_set_height(ui_Panel6, 220);
+	lv_obj_set_align(ui_Panel6, LV_ALIGN_CENTER);
+	lv_obj_clear_flag(ui_Panel6, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+	lv_obj_set_style_radius(ui_Panel6, 360, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_bg_color(ui_Panel6, lv_color_hex(0x0E0303), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_bg_opa(ui_Panel6, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_bg_img_src(ui_Panel6, &ui_img_1321029331, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_border_color(ui_Panel6, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_border_opa(ui_Panel6, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_border_side(ui_Panel6, LV_BORDER_SIDE_FULL, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Arc3 = lv_arc_create(ui_radar);
+    lv_obj_set_width(ui_Arc3, 240);
+    lv_obj_set_height(ui_Arc3, 240);
+    lv_obj_set_align(ui_Arc3, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Arc3, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
+    lv_arc_set_range(ui_Arc3, 0, 360);
+    lv_arc_set_bg_angles(ui_Arc3, 0, 360);
+    lv_arc_set_rotation(ui_Arc3, 180);
+    lv_obj_set_style_arc_color(ui_Arc3, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(ui_Arc3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_set_style_arc_color(ui_Arc3, lv_color_hex(0xD20000), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(ui_Arc3, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    lv_obj_set_style_bg_color(ui_Arc3, lv_color_hex(0xD20000), LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_Arc3, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui_Arc3, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui_Arc3, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui_Arc3, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui_Arc3, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+
+	ui_Panel7 = lv_obj_create(ui_radar);
+	lv_obj_set_width(ui_Panel7, 150);
+	lv_obj_set_height(ui_Panel7, 150);
+	lv_obj_set_align(ui_Panel7, LV_ALIGN_CENTER);
+	lv_obj_clear_flag(ui_Panel7, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+	lv_obj_set_style_radius(ui_Panel7, 360, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_bg_color(ui_Panel7, lv_color_hex(0x101418), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_bg_opa(ui_Panel7, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_border_color(ui_Panel7, lv_color_hex(0x080808), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_border_opa(ui_Panel7, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+	ui_Distance = lv_label_create(ui_Panel7);
+	lv_obj_set_width(ui_Distance, LV_SIZE_CONTENT);   /// 1
+	lv_obj_set_height(ui_Distance, LV_SIZE_CONTENT);    /// 1
+	lv_obj_set_align(ui_Distance, LV_ALIGN_CENTER);
+	lv_label_set_text(ui_Distance, "0.00");
+	lv_obj_set_style_text_color(ui_Distance, lv_color_hex(0xC50000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_opa(ui_Distance, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_align(ui_Distance, LV_TEXT_ALIGN_AUTO, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_decor(ui_Distance, LV_TEXT_DECOR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_font(ui_Distance, &ui_font_wise60, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+	ui_MovementType = lv_label_create(ui_radar);
+	lv_obj_set_width(ui_MovementType, LV_SIZE_CONTENT);   /// 1
+	lv_obj_set_height(ui_MovementType, LV_SIZE_CONTENT);    /// 1
+	lv_obj_set_x(ui_MovementType, 0);
+	lv_obj_set_y(ui_MovementType, -53);
+	lv_obj_set_align(ui_MovementType, LV_ALIGN_CENTER);
+	lv_label_set_text(ui_MovementType, "Movemet");
+	lv_obj_set_style_text_color(ui_MovementType, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_opa(ui_MovementType, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+}
+static void ui_watch_screen_init(void)
+{
+
 
 //    ui_Panel2 = lv_obj_create(ui_Screen1);
 //    lv_obj_set_width(ui_Panel2, 220);

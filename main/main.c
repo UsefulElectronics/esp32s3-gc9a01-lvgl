@@ -69,23 +69,23 @@ void app_main(void)
 
 	uart_config();
 
-	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
+//	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
 
 //	encoder_init(main_encoder_cb);
 
-	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
+//	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
 
 //	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
      xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 
      //Wait for WiFi and MQTT broker connection to be established.
-     vTaskDelay(pdMS_TO_TICKS(15000));
+//     vTaskDelay(pdMS_TO_TICKS(15000));
 
-     sntp_config();
+//     sntp_config();
 
-     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
+//     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 
      xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 
@@ -107,8 +107,8 @@ void lvgl_time_task(void* param)
 
         // The task running lv_timer_handler should have lower priority than that running `lv_tick_inc`
         lv_timer_handler();
-
-        _ui_arc_increment();
+        //Used with smart watch
+//        _ui_arc_increment();
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
 //        vTaskDelay(pdMS_TO_TICKS(10));
 

@@ -44,6 +44,14 @@ extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 
+//Radar Screen
+extern lv_obj_t * ui_radar;
+extern lv_obj_t * ui_Panel6;
+extern lv_obj_t * ui_Arc3;
+extern lv_obj_t * ui_Panel7;
+extern lv_obj_t * ui_Distance;
+extern lv_obj_t * ui_MovementType;
+
 extern watch_t realTime;
 
 
