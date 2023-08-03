@@ -54,6 +54,54 @@ void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, 
 {
     lv_scr_load_anim(target, fademode, spd, delay, false);
 }
+
+/**
+ * @brief handle the data to be viewed in the radar UI page
+ *
+ */
+void _ui_radar(uint8_t movement_type, uint16_t detected_distance)
+{
+	char distance_string[10] = {0};
+	uint8_t meter 	= 0;
+	uint8_t cm		= 0;
+
+	char movement_type_string[10] = {0};
+
+	meter 	= detected_distance / 100;
+
+	cm		= detected_distance % 100;
+
+	sprintf(distance_string, "%d.%02d", meter, cm);
+
+	if(detected_distance)
+	{
+		sprintf(movement_type_string, "MOVEMENT");
+	}
+	else
+	{
+		sprintf(movement_type_string, "STATIC");
+	}
+
+	lv_label_set_text(ui_Distance, distance_string);
+	lv_label_set_text(ui_MovementType, movement_type_string);
+	lv_arc_set_value(ui_Arc3, _ui_arc_scale_radar(detected_distance));
+
+}
+/**
+ * @brief 	Scale the value read from the rader and scale it to the screen arc
+ *
+ * @param 	Value_to_scale	:	read value to scale
+ *
+ * @return	scaled value
+ */
+uint16_t _ui_arc_scale_radar(uint16_t Value_to_scale)
+{
+	const uint16_t max_from = 1000;
+
+	const uint16_t max_to 	= 180;
+
+	return (Value_to_scale * max_to )/ max_from;
+}
 /**
  * @brief Seconds circle handler function
  *

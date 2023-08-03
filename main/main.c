@@ -37,15 +37,24 @@
 #include "lwip/ip_addr.h"
 
 #include "gpio/gpio_config.h"
-/* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
+
+
+/* MACROS --------------------------------------------------------------------*/
+#define SYSTEM_BUFFER_SIZE		4
+/* DEFINITIONS ---------------------------------------------------------------*/
+
+/* PRIVATE STRUCTRES ---------------------------------------------------------*/
+typedef struct
+{
+	uint8_t packet_size;
+	uint16_t data[SYSTEM_BUFFER_SIZE];
+}system_packet;
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *main = "main";
 char targetString[10] = {0};
-/* DEFINITIONS ---------------------------------------------------------------*/
 
-/* MACROS --------------------------------------------------------------------*/
-
+static QueueHandle_t system_queue;
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
@@ -78,7 +87,7 @@ void app_main(void)
 
 //	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
-     xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
+//     xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 
      //Wait for WiFi and MQTT broker connection to be established.
 //     vTaskDelay(pdMS_TO_TICKS(15000));
@@ -94,6 +103,8 @@ void app_main(void)
      xTaskCreatePinnedToCore(uart_transmission_task, "USART TX handling task", 10000, NULL, 4, NULL, 0);
 
      xTaskCreatePinnedToCore(uart_reception_task, "USART RX handling task", 10000, NULL, 4, NULL, 0);
+
+     xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -102,13 +113,20 @@ void app_main(void)
 void lvgl_time_task(void* param)
 {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+	system_packet system_buffer = {0};
 	while(1)
 	{
 
         // The task running lv_timer_handler should have lower priority than that running `lv_tick_inc`
         lv_timer_handler();
-        //Used with smart watch
+//        //Used with smart watch
 //        _ui_arc_increment();
+        if(xQueueReceive(system_queue, (void * )&system_buffer, 2))
+        {
+        	_ui_radar(system_buffer.data[1], system_buffer.data[0]);
+        }
+
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
 //        vTaskDelay(pdMS_TO_TICKS(10));
 
@@ -133,6 +151,10 @@ static void uart_reception_task(void *param)
    uint8_t movementType = 0;
 
    int16_t detectedDistance = 0;
+
+   system_packet system_buffer = {0};
+
+   system_queue 		= xQueueCreate(10, sizeof(system_packet));
    for(;;)
    {
       //Waiting for UART packet to get received.
@@ -143,6 +165,13 @@ static void uart_reception_task(void *param)
     	  if(-1 != detectedDistance)
     	  {
     		  ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
+
+    		  system_buffer.data[0] = detectedDistance;
+    		  system_buffer.data[1] = movementType;
+
+    		  system_buffer.packet_size = 2;
+
+    		  xQueueSendToBack(system_queue, &system_buffer, portMAX_DELAY);
     	  }
       }
    }

@@ -7,6 +7,7 @@
 #define _SQUARELINE_PROJECT_UI_HELPERS_H
 
 #include "lvgl_demo_ui.h"
+#include <stdio.h>
 
 #define _UI_TEMPORARY_STRING_BUFFER_SIZE 32
 #define _UI_BAR_PROPERTY_VALUE 0
@@ -37,6 +38,9 @@ void _ui_roller_set_property(lv_obj_t * target, int id, int val);
 void _ui_slider_set_property(lv_obj_t * target, int id, int val);
 
 void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay);
+
+void _ui_radar(uint8_t movement_type, uint16_t detected_distance);
+uint16_t _ui_arc_scale_radar(uint16_t Value_to_scale);
 
 void _ui_arc_increment();
 void _ui_arc_reverse();
