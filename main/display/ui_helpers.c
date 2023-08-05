@@ -73,7 +73,7 @@ void _ui_radar(uint8_t movement_type, uint16_t detected_distance)
 
 	sprintf(distance_string, "%d.%02d", meter, cm);
 
-	if(detected_distance)
+	if(movement_type)
 	{
 		sprintf(movement_type_string, "MOVEMENT");
 	}
