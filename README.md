@@ -48,6 +48,7 @@ The nicely looking user interface is designed using Square line studio with LVGL
 
 The radar module is tested to detect moving objects and human behind obstacle like door or wall. check out the test results
 
+![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/HLK-LD1125H.png)
 
 | Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
 | ----------------- | ----- | -------- | -------- | -------- | -------- |
