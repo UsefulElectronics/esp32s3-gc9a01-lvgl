@@ -36,6 +36,17 @@ Every part regarding the user interface design is also explained in details usin
 ![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/circuit%20diagram.PNG)
 ***
 
+# ESP32S3 HLK-LD1125H Human Presence Sensor
+***
+### [Tutorial Link](https://youtu.be/RXj-JX6W-YE) On [![Build Status](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/wardzx1) 
+
+In this tutorial, ESP32S3 MCU is programmed to show Human Presence Radar data that is received over UART on GC9A01 round display that is driven over SPI.
+
+The human presence radar continuously sends detected object distance and its movement type. the MCU takes the data converts it and prints it on the round display.
+
+The nicely looking user interface is designed using Square line studio with LVGL library.
+
+The radar module is tested to detect moving objects and human behind obstacle like door or wall. check out the test results
 
 
 | Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
