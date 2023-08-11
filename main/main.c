@@ -78,7 +78,7 @@ void app_main(void)
 
 	uart_config();
 
-//	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
+	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
 
 //	encoder_init(main_encoder_cb);
