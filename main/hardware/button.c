@@ -41,15 +41,19 @@ static uint8_t button_index_find(uint8_t pin);
  *
  * @param 	long_press_time_ms The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms)
+void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, uint8_t* button_read, void* button_callback)
 {
 	static uint8_t button_index = 0;
 
-	hw_buttons[button_index].config.pin = pin;
+	hw_buttons[button_index].config.pin 				= pin;
 
-	hw_buttons[button_index].config.pull_type = pull_type;
+	hw_buttons[button_index].config.pull_type 			= pull_type;
 
-	hw_buttons[button_index].config.long_press_time_ms = long_press_time_ms;
+	hw_buttons[button_index].config.long_press_time_ms 	= long_press_time_ms;
+
+	hw_buttons[button_index].input_read 				= button_read;
+
+	hw_buttons[button_index].callback 					= button_callback;
 
 	++button_index;
 }
@@ -83,7 +87,7 @@ bool button_debounce(uint8_t pin)
 
 	button_index = button_index_find(pin);
 
-	if(hw_buttons[button_index].config.pull_type == gpio_get_level(hw_buttons[button_index].config.pin))
+	if(hw_buttons[button_index].config.pull_type != gpio_get_level(hw_buttons[button_index].config.pin))
 	{
 		++level;
 	}

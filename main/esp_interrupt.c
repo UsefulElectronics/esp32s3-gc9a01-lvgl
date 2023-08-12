@@ -40,11 +40,18 @@ void  gpio_isr_handle(void *arg)
 
 	uint8_t gpio_idx = (uint8_t) arg;
 
-	xSemaphoreGiveFromISR(button_sem, &xHigherPriorityTaskWoken);
-    if(xHigherPriorityTaskWoken)
-    {
-        portYIELD_FROM_ISR();
-    }
+	uint32_t notification_type =
+
+	callbackId = CALLBACK_TIMER_ELAPSE;
+	//Notify callback handling task and pass callbackID
+	xTaskNotifyFromISR( hSystem_callbackTask,		//Task handler to pass the notification to
+						callbackId,					//CallbackID to be passed to the function
+						eSetValueWithOverwrite,		//CallbackID will be cleared once the corresponding task is executed
+	                    &xHigherPriorityTaskWoken);	//After noticing callback handle task, it will be executed immediately
+													//regardless of its priority in the system.
+
+	//Give priority to callback handling task to handle the callback immediately.
+	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 }
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

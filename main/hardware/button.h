@@ -51,7 +51,8 @@ typedef struct
     button_state_t state;       // Current button state
     uint32_t press_time;        // Timestamp when the button was pressed
     bool is_long_press;         // Flag indicating if the button is being long-pressed
-    // Add any additional data members you might need here
+    uint8_t (*input_read)(void);
+	void 	(*callback)(void);
 } button_t;
 /* VARIABLES -----------------------------------------------------------------*/
 
@@ -68,7 +69,7 @@ typedef struct
  *
  * @param 	long_press_time_ms The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms);
+void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, uint8_t* button_read, void* button_callback);
 /**
  * @brief 	Perform button debounce to filter out spurious button state changes.
  *

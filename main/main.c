@@ -55,6 +55,8 @@ static const char *main = "main";
 char targetString[10] = {0};
 
 static QueueHandle_t system_queue;
+
+TaskHandle_t hMain_uiTask 				= NULL;
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
@@ -64,6 +66,8 @@ static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
 static void time_handle_task(void* param);
 static void uart_reception_task(void *param);
+
+
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
@@ -79,6 +83,8 @@ void app_main(void)
 	uart_config();
 
 	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
+
+	button_init(KNOB_BUTTON, 1, 1500);
 
 
 //	encoder_init(main_encoder_cb);
@@ -160,6 +166,32 @@ static void uart_reception_task(void *param)
       //Waiting for UART packet to get received.
       if(xQueueReceive(uartRxStore_queue, (void * )&uartHandler, portMAX_DELAY))
       {
+    	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer,(uint8_t*) &movementType);
+
+    	  if(-1 != detectedDistance)
+    	  {
+    		  ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
+
+    		  system_buffer.data[0] = detectedDistance;
+    		  system_buffer.data[1] = movementType;
+
+    		  system_buffer.packet_size = 2;
+
+    		  xQueueSendToBack(system_queue, &system_buffer, portMAX_DELAY);
+    	  }
+      }
+   }
+}
+static void ui_evet_task(void *param)
+{
+	uint32_t ui_event	 	 = 0;
+	const uint32_t bit_to_clear = 0xFFFFFFFF;
+
+   for(;;)
+   {
+      //Waiting for a notification to be received
+	   if(xTaskNotifyWait(0, bit_to_clear, &callbackID, portMAX_DELAY ))
+	   {
     	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer,(uint8_t*) &movementType);
 
     	  if(-1 != detectedDistance)
