@@ -25,6 +25,9 @@
 /* MACROS --------------------------------------------------------------------*/
 #define HARDWARE_BUTTON_COUNT		1
 #define HARDWARE_BUTTON_OFFSET		1
+
+#define ENABLE			1
+#define DISABLE			0
 /* ENUMORATIONS --------------------------------------------------------------*/
 // Button states
 typedef enum
@@ -50,10 +53,17 @@ typedef struct
     button_config_t config;     // Button configuration
     button_state_t state;       // Current button state
     uint32_t press_time;        // Timestamp when the button was pressed
-    bool is_long_press;         // Flag indicating if the button is being long-pressed
+    bool long_press;         // Flag indicating if the button is being long-pressed
     uint8_t (*input_read)(void);
 	void 	(*callback)(void);
 } button_t;
+
+// Button handler structure
+typedef struct
+{
+    uint32_t    (*tick)(void);
+	void 	    (*input_read)(uint8_t gpio_pin);
+} button_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/

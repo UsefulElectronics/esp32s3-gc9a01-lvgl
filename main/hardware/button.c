@@ -21,7 +21,13 @@
 
 /* VARIABLES -----------------------------------------------------------------*/
 //Offset state is used to handle undefined button situation
-button_t hw_buttons[HARDWARE_BUTTON_COUNT + HARDWARE_BUTTON_OFFSET] = {0};
+button_t 			hw_buttons[HARDWARE_BUTTON_COUNT + HARDWARE_BUTTON_OFFSET] = {0};
+
+button_handler_t	hButton	= {0};
+
+uint32_t* 			(button_tick)(void);
+
+static uint8_t 		button_index = 0;
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -35,23 +41,22 @@ static uint8_t button_index_find(uint8_t pin);
  * 			This function initializes a button by setting up its configuration with the given parameters.
  * 			The button configuration includes the GPIO pin, pull type, and the duration required to detect a long-press.
  *
- * @param 	pin The GPIO pin number to be associated with the button.
+ * @param 	pin 				The GPIO pin number to be associated with the button.
  *
- * @param 	pull_type either pull up = 1 or pull down = 0
+ * @param 	pull_type 			either pull up = 1 or pull down = 0
  *
- * @param 	long_press_time_ms The duration in milliseconds required to detect a long-press event on the button.
+ * @param 	long_press_time_ms 	The duration in milliseconds required to detect a long-press event on the button.
+ * 
+ * @param 	button_callback		The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, uint8_t* button_read, void* button_callback)
+void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, , void* button_callback)
 {
-	static uint8_t button_index = 0;
-
+	
 	hw_buttons[button_index].config.pin 				= pin;
 
 	hw_buttons[button_index].config.pull_type 			= pull_type;
 
 	hw_buttons[button_index].config.long_press_time_ms 	= long_press_time_ms;
-
-	hw_buttons[button_index].input_read 				= button_read;
 
 	hw_buttons[button_index].callback 					= button_callback;
 
@@ -94,6 +99,7 @@ bool button_debounce(uint8_t pin)
 	else
 	{
 		--level;
+
 		if(level <= start_boundry)
 		{
 			level = start_boundry;
@@ -102,9 +108,62 @@ bool button_debounce(uint8_t pin)
 	if(level >= end_boundry)
 	{
 		level = end_boundry;
+
 		ret = ENABLE;
+
+		hw_buttons[button_index].state 		= BUTTON_PRESSED;
+
+		hw_buttons[button_index].press_time	= hButton.tick(); 
 	}
 	return ret;
+}
+/**
+ * @brief number of registered buttons is owned by this layer
+ * 
+ * @return the number of registered buttons 
+ */
+uint8_t button_get_count(void)
+{
+	return button_index;
+}
+/**
+ * @brief initialize button handler variables content
+ * 
+ * @param systick 	:	system tick get function
+ */
+void button_manager_init(uint32_t* systick)
+{
+	memset(&hw_buttons ,0 ,sizeof(button_t) * HARDWARE_BUTTON_COUNT);
+
+	button_index = 0;
+
+	hButton.tick = systick;
+}
+/**
+ * @brief 
+ * 
+ */
+void button_manager(void)
+{
+	uint8_t button_count = button_get_count();
+
+	for(uint8_t i = 0; i < button_index; ++i)
+	{
+		if(hw_buttons[button_index].state == BUTTON_PRESSED)
+		{
+			if(hButton.input_read(hw_buttons[button_index].config.pin) == hw_buttons[button_index].config.pull_type)
+			{
+				hw_buttons[button_index].state 		= BUTTON_IDLE;
+
+				hw_buttons[button_index].long_press = DISABLE;
+			}
+			else if(hButton.tick() - hw_buttons[button_index].press_time > hw_buttons[button_index].config.long_press_time_ms )
+			{
+				hw_buttons[button_index].long_press = ENABLE;
+			}
+		}
+
+	}
 }
 /**
  * @brief 	Find the index of a button configuration in the hardware button array.

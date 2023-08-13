@@ -66,6 +66,7 @@ static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
 static void time_handle_task(void* param);
 static void uart_reception_task(void *param);
+static uint32_t main_get_systick(void);
 
 
 
@@ -321,5 +322,8 @@ static void main_tempretureStringPrepare(char* tempString, char* targetString)
 	targetString[6] = 0;
 
 }
-
+static uint32_t main_get_systick(void)
+{
+	return SYS_TICK();
+}
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
