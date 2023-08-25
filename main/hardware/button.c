@@ -49,14 +49,14 @@ static uint8_t button_index_find(uint8_t pin);
  * 
  * @param 	button_callback		The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, , void* button_callback)
+void button_init(uint8_t pin, uint8_t pull_type, uint32_t press_time, , void* button_callback)
 {
 	
 	hw_buttons[button_index].config.pin 				= pin;
 
 	hw_buttons[button_index].config.pull_type 			= pull_type;
 
-	hw_buttons[button_index].config.long_press_time_ms 	= long_press_time_ms;
+	hw_buttons[button_index].config.long_press_time_ms 	= press_time;
 
 	hw_buttons[button_index].callback 					= button_callback;
 

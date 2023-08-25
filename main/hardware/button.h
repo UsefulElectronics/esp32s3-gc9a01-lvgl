@@ -73,13 +73,15 @@ typedef struct
  * 			This function initializes a button by setting up its configuration with the given parameters.
  * 			The button configuration includes the GPIO pin, pull type, and the duration required to detect a long-press.
  *
- * @param 	pin The GPIO pin number to be associated with the button.
+ * @param 	pin 				The GPIO pin number to be associated with the button.
  *
- * @param 	pull_type either pull up = 1 or pull down = 0
+ * @param 	pull_type 			either pull up = 1 or pull down = 0
  *
- * @param 	long_press_time_ms The duration in milliseconds required to detect a long-press event on the button.
+ * @param 	long_press_time_ms 	The duration in milliseconds required to detect a long-press event on the button.
+ * 
+ * @param 	button_callback		The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t long_press_time_ms, uint8_t* button_read, void* button_callback);
+void button_init(uint8_t pin, uint8_t pull_type, uint32_t press_time, , void* button_callback);
 /**
  * @brief 	Perform button debounce to filter out spurious button state changes.
  *

@@ -297,6 +297,37 @@ static void time_handle_task(void* param)
 
 	}
 }
+static void interrupt_handle_task(void* param)
+{
+	struct tm  Time = {0};
+
+	char tempString[3] = {0};
+
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+	const uint32_t tempUpdatePeriod = 60 * 60; //1 hour
+
+	static uint32_t tempUpdateCounter = 0;
+
+	const char publishRequest = 1;
+	while(1)
+	{
+		//Note: CallbackID is cleared immediately after executing this task
+		if(xTaskNotifyWait(0, ULONG_MAX, &interrupt_id, portMAX_DELAY ))
+		{
+			switch (interrupt_id)
+			{
+			case EXT_GPIO_INT:
+				/* code */
+				break;
+			
+			default:
+				break;
+			}
+		}
+	}
+}
+
 /**
  * @brief 	Create a proper temperature value showing string
  *
