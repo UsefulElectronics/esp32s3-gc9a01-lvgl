@@ -1,3 +1,14 @@
 {
-    "idf.adapterTargetName": "esp32"
+    "idf.adapterTargetName": "esp32s3",
+    "files.associations": {
+        "button.h": "c",
+        "stdbool.h": "c",
+        "hlk-ld1125h.h": "c",
+        "gpio_config.h": "c",
+        "string.h": "c",
+        "display.h": "c",
+        "lvgl.h": "c",
+        "lvgl_demo_ui.h": "c"
+    },
+    "idf.flashType": "UART"
 }

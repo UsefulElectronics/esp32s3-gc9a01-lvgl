@@ -36,6 +36,7 @@ typedef enum
 
 /* VARIABLES -----------------------------------------------------------------*/
 extern TaskHandle_t hMain_uiTask;
+extern TaskHandle_t hMain_eventTask;
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
 
 

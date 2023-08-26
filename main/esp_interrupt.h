@@ -32,13 +32,13 @@
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
-typedef struct 
+typedef enum 
 {
 	IDLE_INT 		= 0,
 	EXT_GPIO_INT,
-}interrupt_t;
+}interrupt_e;
 /* VARIABLES -----------------------------------------------------------------*/
-
+extern interrupt_e interrupt_id;
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
 /**
  * @brief 	GPIO interrupt service routine will be executed when the related interrupt is fired. this function will give

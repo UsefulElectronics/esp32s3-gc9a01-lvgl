@@ -37,7 +37,7 @@
 #include "lwip/ip_addr.h"
 
 #include "gpio/gpio_config.h"
-
+#include "esp_log.h"
 
 
 /* MACROS --------------------------------------------------------------------*/
@@ -54,9 +54,12 @@ typedef struct
 static const char *main = "main";
 char targetString[10] = {0};
 
+static const char* TAG = "main";
+
 static QueueHandle_t system_queue;
 
 TaskHandle_t hMain_uiTask 				= NULL;
+TaskHandle_t hMain_eventTask			= NULL;
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
 static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
@@ -66,6 +69,10 @@ static void wirless_init_task(void* param);
 static void mqtt_msg_pars_task(void* param);
 static void time_handle_task(void* param);
 static void uart_reception_task(void *param);
+static void event_handle_task(void* param);
+
+
+static void main_rotary_button_event(void);
 static uint32_t main_get_systick(void);
 
 
@@ -85,7 +92,9 @@ void app_main(void)
 
 	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
-	button_init(KNOB_BUTTON, 1, 1500);
+
+	button_init(main_get_systick, gpio_get_level);
+	button_add(KNOB_BUTTON, 1, 1500, main_rotary_button_event);
 
 
 //	encoder_init(main_encoder_cb);
@@ -134,6 +143,8 @@ void lvgl_time_task(void* param)
         	_ui_radar(system_buffer.data[1], system_buffer.data[0]);
         }
 
+		button_manager();
+
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
 //        vTaskDelay(pdMS_TO_TICKS(10));
 
@@ -171,7 +182,7 @@ static void uart_reception_task(void *param)
 
     	  if(-1 != detectedDistance)
     	  {
-    		  ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
+    		//   ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
 
     		  system_buffer.data[0] = detectedDistance;
     		  system_buffer.data[1] = movementType;
@@ -183,32 +194,7 @@ static void uart_reception_task(void *param)
       }
    }
 }
-static void ui_evet_task(void *param)
-{
-	uint32_t ui_event	 	 = 0;
-	const uint32_t bit_to_clear = 0xFFFFFFFF;
 
-   for(;;)
-   {
-      //Waiting for a notification to be received
-	   if(xTaskNotifyWait(0, bit_to_clear, &callbackID, portMAX_DELAY ))
-	   {
-    	  detectedDistance = hlk_ld1125h_parse_packet(hUart.uart_rxBuffer,(uint8_t*) &movementType);
-
-    	  if(-1 != detectedDistance)
-    	  {
-    		  ESP_LOGI(main, "dis = %d, move type %d", detectedDistance, movementType);
-
-    		  system_buffer.data[0] = detectedDistance;
-    		  system_buffer.data[1] = movementType;
-
-    		  system_buffer.packet_size = 2;
-
-    		  xQueueSendToBack(system_queue, &system_buffer, portMAX_DELAY);
-    	  }
-      }
-   }
-}
 /**
  * @brief Initialize WiFi and connect to The configured WiFi network. and then connect to the MQTT broker
  *
@@ -297,19 +283,8 @@ static void time_handle_task(void* param)
 
 	}
 }
-static void interrupt_handle_task(void* param)
+static void event_handle_task(void* param)
 {
-	struct tm  Time = {0};
-
-	char tempString[3] = {0};
-
-	TickType_t xLastWakeTime = xTaskGetTickCount();
-
-	const uint32_t tempUpdatePeriod = 60 * 60; //1 hour
-
-	static uint32_t tempUpdateCounter = 0;
-
-	const char publishRequest = 1;
 	while(1)
 	{
 		//Note: CallbackID is cleared immediately after executing this task
@@ -318,7 +293,7 @@ static void interrupt_handle_task(void* param)
 			switch (interrupt_id)
 			{
 			case EXT_GPIO_INT:
-				/* code */
+				button_debounce(KNOB_BUTTON);
 				break;
 			
 			default:
@@ -352,6 +327,18 @@ static void main_tempretureStringPrepare(char* tempString, char* targetString)
 
 	targetString[6] = 0;
 
+}
+static void main_rotary_button_event(void)
+{
+	button_state_t button_state = button_state_get(KNOB_BUTTON);
+	if(button_state == BUTTON_CLICKED) 
+	{
+		ESP_LOGI(TAG, "Button pressed");
+	}
+	else if (button_state == BUTTON_LONG_PRESSED)
+	{
+		ESP_LOGI(TAG, "Button long pressed");
+	}
 }
 static uint32_t main_get_systick(void)
 {

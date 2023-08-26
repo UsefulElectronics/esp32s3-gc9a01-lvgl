@@ -85,6 +85,7 @@ void gpio_config_input(uint8_t gpio_pin)
 	gpio_pad_select_gpio(gpio_pin);
 
 	gpio_set_direction(gpio_pin, GPIO_MODE_INPUT);
+
 }
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

@@ -21,7 +21,7 @@
 
 /* VARIABLES -----------------------------------------------------------------*/
 SemaphoreHandle_t button_sem 	= NULL;
-interrupt_t interrupt_id		= IDLE_INT;
+interrupt_e interrupt_id		= IDLE_INT;
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -43,7 +43,7 @@ void  gpio_isr_handle(void *arg)
 
 	interrupt_id = EXT_GPIO_INT;
 	//Notify callback handling task and pass callbackID
-	xTaskNotifyFromISR( hSystem_callbackTask,		//Task handler to pass the notification to
+	xTaskNotifyFromISR( hMain_eventTask,		//Task handler to pass the notification to
 						interrupt_id,				//CallbackID to be passed to the function
 						eSetValueWithOverwrite,		//CallbackID will be cleared once the corresponding task is executed
 	                    &xHigherPriorityTaskWoken);	//After noticing callback handle task, it will be executed immediately

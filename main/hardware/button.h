@@ -19,7 +19,9 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "gpio/gpio_config.h"
 #include "stdbool.h"
 /* MACROS --------------------------------------------------------------------*/
@@ -39,31 +41,7 @@ typedef enum
     BUTTON_LONG_PRESSED
 } button_state_t;
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
-// Button configuration structure
-typedef struct
-{
-    uint8_t pin;                // GPIO pin number for the button
-    uint8_t pull_type;          // pull type either pull up = 1 or pull down = 0
-    uint32_t long_press_time_ms; // Long press duration in milliseconds
-} button_config_t;
 
-// Button object structure
-typedef struct
-{
-    button_config_t config;     // Button configuration
-    button_state_t state;       // Current button state
-    uint32_t press_time;        // Timestamp when the button was pressed
-    bool long_press;         // Flag indicating if the button is being long-pressed
-    uint8_t (*input_read)(void);
-	void 	(*callback)(void);
-} button_t;
-
-// Button handler structure
-typedef struct
-{
-    uint32_t    (*tick)(void);
-	void 	    (*input_read)(uint8_t gpio_pin);
-} button_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
@@ -81,7 +59,15 @@ typedef struct
  * 
  * @param 	button_callback		The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t press_time, , void* button_callback);
+void button_add(uint8_t pin, uint8_t pull_type, uint32_t press_time, void* button_callback);
+/**
+ * @brief 	Initialize the button driver handler
+ * 
+ * @param 	get_tick	: function pointer that reads and returns the system tick
+ * 
+ * @param 	gpio_read 	: fucntion pointer that reads and returns the state of the passed gpio pin
+ */
+void button_init(uint32_t* get_tick, uint8_t gpio_read);
 /**
  * @brief 	Perform button debounce to filter out spurious button state changes.
  *
@@ -100,8 +86,19 @@ void button_init(uint8_t pin, uint8_t pull_type, uint32_t press_time, , void* bu
  *       To debounce multiple buttons, use a separate instance of this function for each button with its pin number.
  */
 bool button_debounce(uint8_t pin);
-
-
+/**
+ * @brief 	Obtain the stated of the required button whether it is pressed, long pressed or double clicked.
+ * 
+ * @param 	pin : physical pin the button is connected to 
+ * 
+ * @return 	button_state_t the state of the button
+ */
+button_state_t button_state_get(uint8_t pin);
+/**
+ * @brief Handle all button related states and callbacks 
+ * 
+ */
+void button_manager(void);
 
 //Button action click double click long press
 

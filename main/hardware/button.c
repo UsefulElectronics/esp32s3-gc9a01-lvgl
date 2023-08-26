@@ -18,7 +18,31 @@
 #include "button.h"
 
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
+// Button configuration structure
+typedef struct
+{
+    uint8_t pin;                // GPIO pin number for the button
+    uint8_t pull_type;          // pull type either pull up = 1 or pull down = 0
+    uint32_t long_press_time_ms; // Long press duration in milliseconds
+} button_config_t;
 
+// Button object structure
+typedef struct
+{
+    button_config_t config;     // Button configuration
+    button_state_t state;       // Current button state
+    uint32_t press_time;        // Timestamp when the button was pressed
+    bool long_press;         // Flag indicating if the button is being long-pressed
+    uint8_t (*input_read)(void);
+	void 	(*callback)(void);
+} button_t;
+
+// Button handler structure
+typedef struct
+{
+    uint32_t    (*tick)(void);
+	uint8_t 	(*input_read)(uint8_t gpio_pin);
+} button_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 //Offset state is used to handle undefined button situation
 button_t 			hw_buttons[HARDWARE_BUTTON_COUNT + HARDWARE_BUTTON_OFFSET] = {0};
@@ -34,7 +58,21 @@ static uint8_t 		button_index = 0;
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static uint8_t button_index_find(uint8_t pin);
+
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
+/**
+ * @brief 	Initialize the button driver handler
+ * 
+ * @param 	get_tick	: function pointer that reads and returns the system tick
+ * 
+ * @param 	gpio_read 	: fucntion pointer that reads and returns the state of the passed gpio pin
+ */
+void button_init(uint32_t* get_tick, uint8_t gpio_read)
+{
+	hButton.input_read = gpio_read;
+
+	hButton.tick = get_tick;
+}
 /**
  * @brief 	Initialize a button with the given pin, pull type, and long-press duration.
  *
@@ -49,9 +87,8 @@ static uint8_t button_index_find(uint8_t pin);
  * 
  * @param 	button_callback		The duration in milliseconds required to detect a long-press event on the button.
  */
-void button_init(uint8_t pin, uint8_t pull_type, uint32_t press_time, , void* button_callback)
-{
-	
+void button_add(uint8_t pin, uint8_t pull_type, uint32_t press_time, void* button_callback)
+{	
 	hw_buttons[button_index].config.pin 				= pin;
 
 	hw_buttons[button_index].config.pull_type 			= pull_type;
@@ -83,10 +120,10 @@ bool button_debounce(uint8_t pin)
 {
 	bool ret = DISABLE;
 
-	const uint16_t	start_boundry 	= 500;
-	const uint16_t	end_boundry	 	= 4000;
+	const uint16_t	start_boundary 	= 500;
+	const uint16_t	end_boundary	 	= 4000;
 
-	static uint16_t level = start_boundry;
+	static uint16_t level = start_boundary;
 
 	uint8_t button_index = 0;
 
@@ -100,14 +137,14 @@ bool button_debounce(uint8_t pin)
 	{
 		--level;
 
-		if(level <= start_boundry)
+		if(level <= start_boundary)
 		{
-			level = start_boundry;
+			level = start_boundary;
 		}
 	}
-	if(level >= end_boundry)
+	if(level >= end_boundary)
 	{
-		level = end_boundry;
+		level = end_boundary;
 
 		ret = ENABLE;
 
@@ -140,7 +177,23 @@ void button_manager_init(uint32_t* systick)
 	hButton.tick = systick;
 }
 /**
- * @brief 
+ * @brief 	Obtain the stated of the required button whether it is pressed, long pressed or double clicked.
+ * 
+ * @param 	pin : physical pin the button is connected to 
+ * 
+ * @return 	button_state_t the state of the button
+ */
+button_state_t button_state_get(uint8_t pin)
+{
+	uint8_t button_index = 0;
+
+	button_index = button_index_find(pin);
+
+	return hw_buttons[button_index].state;
+}
+
+/**
+ * @brief Handle all button related states and callbacks 
  * 
  */
 void button_manager(void)
@@ -149,17 +202,24 @@ void button_manager(void)
 
 	for(uint8_t i = 0; i < button_index; ++i)
 	{
-		if(hw_buttons[button_index].state == BUTTON_PRESSED)
+		if((hw_buttons[button_index].state == BUTTON_PRESSED) || (hw_buttons[button_index].state == BUTTON_LONG_PRESSED))
 		{
 			if(hButton.input_read(hw_buttons[button_index].config.pin) == hw_buttons[button_index].config.pull_type)
 			{
-				hw_buttons[button_index].state 		= BUTTON_IDLE;
+				hw_buttons[button_index].state 		= BUTTON_CLICKED;
 
-				hw_buttons[button_index].long_press = DISABLE;
+				hw_buttons[button_index].callback();
+
+				hw_buttons[button_index].state 		= BUTTON_IDLE;
 			}
 			else if(hButton.tick() - hw_buttons[button_index].press_time > hw_buttons[button_index].config.long_press_time_ms )
 			{
-				hw_buttons[button_index].long_press = ENABLE;
+				hw_buttons[button_index].state 		= BUTTON_LONG_PRESSED;	
+
+				hw_buttons[button_index].callback();
+
+				hw_buttons[button_index].state 		= BUTTON_IDLE;
+
 			}
 		}
 
@@ -189,5 +249,7 @@ static uint8_t button_index_find(uint8_t pin)
 	}
 	return index;
 }
+
+
 
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
