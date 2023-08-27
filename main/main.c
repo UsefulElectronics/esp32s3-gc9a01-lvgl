@@ -92,7 +92,6 @@ void app_main(void)
 
 	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
-
 	button_init(main_get_systick, gpio_get_level);
 	button_add(KNOB_BUTTON, 1, 1500, main_rotary_button_event);
 
@@ -121,6 +120,8 @@ void app_main(void)
      xTaskCreatePinnedToCore(uart_reception_task, "USART RX handling task", 10000, NULL, 4, NULL, 0);
 
      xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
+
+     xTaskCreatePinnedToCore(event_handle_task, "lvgl_time_task", 10000, NULL, 4, &hMain_eventTask, 1);
 }
 /**
  * @brief 	LVGL library timer task. Necessary to run once every 10ms
@@ -138,12 +139,15 @@ void lvgl_time_task(void* param)
         lv_timer_handler();
 //        //Used with smart watch
 //        _ui_arc_increment();
+
+        button_manager();
+
         if(xQueueReceive(system_queue, (void * )&system_buffer, 2))
         {
         	_ui_radar(system_buffer.data[1], system_buffer.data[0]);
         }
 
-		button_manager();
+
 
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
 //        vTaskDelay(pdMS_TO_TICKS(10));

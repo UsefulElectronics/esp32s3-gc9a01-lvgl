@@ -16,7 +16,7 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "button.h"
-
+#include "esp_log.h"
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 // Button configuration structure
 typedef struct
@@ -41,7 +41,7 @@ typedef struct
 typedef struct
 {
     uint32_t    (*tick)(void);
-	uint8_t 	(*input_read)(uint8_t gpio_pin);
+    uint8_t 	(*input_read)(uint8_t gpio_pin);
 } button_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 //Offset state is used to handle undefined button situation
@@ -52,6 +52,8 @@ button_handler_t	hButton	= {0};
 uint32_t* 			(button_tick)(void);
 
 static uint8_t 		button_index = 0;
+
+static const char* TAG = "button";
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -67,7 +69,7 @@ static uint8_t button_index_find(uint8_t pin);
  * 
  * @param 	gpio_read 	: fucntion pointer that reads and returns the state of the passed gpio pin
  */
-void button_init(uint32_t* get_tick, uint8_t gpio_read)
+void button_init(uint32_t* get_tick, uint8_t* gpio_read)
 {
 	hButton.input_read = gpio_read;
 
@@ -120,38 +122,48 @@ bool button_debounce(uint8_t pin)
 {
 	bool ret = DISABLE;
 
-	const uint16_t	start_boundary 	= 500;
-	const uint16_t	end_boundary	 	= 4000;
+	const uint16_t	start_boundary 		= 500;
+	const uint16_t	end_boundary	 	= 10000;
 
-	static uint16_t level = start_boundary;
+	const uint16_t	middle_value	 	= 4000;
+
+	static uint16_t level = middle_value;
 
 	uint8_t button_index = 0;
 
 	button_index = button_index_find(pin);
 
-	if(hw_buttons[button_index].config.pull_type != gpio_get_level(hw_buttons[button_index].config.pin))
+	while(1)
 	{
-		++level;
-	}
-	else
-	{
-		--level;
-
-		if(level <= start_boundary)
+		if(hw_buttons[button_index].config.pull_type != hButton.input_read(hw_buttons[button_index].config.pin))
 		{
-			level = start_boundary;
+			++level;
+		}
+		else
+		{
+			--level;
+
+			if(level <= start_boundary)
+			{
+				level = middle_value;
+
+				break;
+			}
+		}
+		if(level >= end_boundary)
+		{
+			level = middle_value;
+
+			ret = ENABLE;
+
+			hw_buttons[button_index].state 		= BUTTON_PRESSED;
+
+			hw_buttons[button_index].press_time	= hButton.tick();
+
+			break;
 		}
 	}
-	if(level >= end_boundary)
-	{
-		level = end_boundary;
 
-		ret = ENABLE;
-
-		hw_buttons[button_index].state 		= BUTTON_PRESSED;
-
-		hw_buttons[button_index].press_time	= hButton.tick(); 
-	}
 	return ret;
 }
 /**
@@ -202,23 +214,23 @@ void button_manager(void)
 
 	for(uint8_t i = 0; i < button_index; ++i)
 	{
-		if((hw_buttons[button_index].state == BUTTON_PRESSED) || (hw_buttons[button_index].state == BUTTON_LONG_PRESSED))
+		if((hw_buttons[i].state == BUTTON_PRESSED) || (hw_buttons[i].state == BUTTON_LONG_PRESSED))
 		{
-			if(hButton.input_read(hw_buttons[button_index].config.pin) == hw_buttons[button_index].config.pull_type)
+			if(hButton.input_read(hw_buttons[i].config.pin) == hw_buttons[i].config.pull_type)
 			{
-				hw_buttons[button_index].state 		= BUTTON_CLICKED;
+				hw_buttons[i].state 		= BUTTON_CLICKED;
 
-				hw_buttons[button_index].callback();
+				hw_buttons[i].callback();
 
-				hw_buttons[button_index].state 		= BUTTON_IDLE;
+				hw_buttons[i].state 		= BUTTON_IDLE;
 			}
-			else if(hButton.tick() - hw_buttons[button_index].press_time > hw_buttons[button_index].config.long_press_time_ms )
+			else if(hButton.tick() - hw_buttons[i].press_time > hw_buttons[i].config.long_press_time_ms )
 			{
-				hw_buttons[button_index].state 		= BUTTON_LONG_PRESSED;	
+				hw_buttons[i].state 		= BUTTON_LONG_PRESSED;
 
-				hw_buttons[button_index].callback();
+				hw_buttons[i].callback();
 
-				hw_buttons[button_index].state 		= BUTTON_IDLE;
+				hw_buttons[i].state 		= BUTTON_IDLE;
 
 			}
 		}

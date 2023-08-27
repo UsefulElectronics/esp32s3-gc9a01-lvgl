@@ -22,6 +22,7 @@
 /* VARIABLES -----------------------------------------------------------------*/
 SemaphoreHandle_t button_sem 	= NULL;
 interrupt_e interrupt_id		= IDLE_INT;
+static const char* TAG = "interrupt";
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/

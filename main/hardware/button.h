@@ -67,7 +67,7 @@ void button_add(uint8_t pin, uint8_t pull_type, uint32_t press_time, void* butto
  * 
  * @param 	gpio_read 	: fucntion pointer that reads and returns the state of the passed gpio pin
  */
-void button_init(uint32_t* get_tick, uint8_t gpio_read);
+void button_init(uint32_t* get_tick, uint8_t* gpio_read);
 /**
  * @brief 	Perform button debounce to filter out spurious button state changes.
  *

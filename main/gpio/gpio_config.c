@@ -44,7 +44,7 @@
  */
 void gpio_config_ext_interrupt(uint8_t gpio_pin, gpio_int_type_t interrupt_type, void* gpio_isr_function)
 {
-	gpio_config_t gpio_handler;
+	gpio_config_t gpio_handler = {0};
 
 	gpio_handler.intr_type = interrupt_type;
 
@@ -56,7 +56,7 @@ void gpio_config_ext_interrupt(uint8_t gpio_pin, gpio_int_type_t interrupt_type,
 
 	gpio_handler.pull_up_en = GPIO_PULLUP_DISABLE;
 
-	gpio_config(&gpio_config);
+	gpio_config(&gpio_handler);
 
 	gpio_install_isr_service(ESP_INTR_FLAG_LEVEL2);
 
