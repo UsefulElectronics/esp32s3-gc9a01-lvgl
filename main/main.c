@@ -62,7 +62,7 @@ TaskHandle_t hMain_uiTask 				= NULL;
 TaskHandle_t hMain_eventTask			= NULL;
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
-static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus);
+static void main_encoder_cb(uint8_t knobPosition);
 static void main_tempretureStringPrepare(char* tempString, char* targetString);
 static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
@@ -96,11 +96,11 @@ void app_main(void)
 	button_add(KNOB_BUTTON, 1, 1500, main_rotary_button_event);
 
 
-//	encoder_init(main_encoder_cb);
+	encoder_init(main_encoder_cb);
 
 //	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
 
-//	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
+	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
 //     xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
 
@@ -161,9 +161,9 @@ void lvgl_time_task(void* param)
  *
  * @param 	knobPosition	: Read encoder position value.
  */
-static void main_encoder_cb(uint8_t knobPosition, uint8_t knobButtonStatus)
+static void main_encoder_cb(uint8_t knobPosition)
 {
-	set_value((int32_t) knobPosition, knobButtonStatus);
+//	set_value((int32_t) knobPosition, knobButtonStatus);
 }
 
 static void uart_reception_task(void *param)

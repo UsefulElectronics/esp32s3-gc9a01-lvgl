@@ -22,7 +22,7 @@ typedef struct
 {
 	uint32_t eventCount;
 	QueueHandle_t queue;
-	void (*callback)(uint32_t encoderValue, bool encoderButton);
+	void (*callback)(uint32_t encoderValue);
 }encoder_handler_t;
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *encoder = "encoder";
@@ -55,18 +55,49 @@ void encoder_handler_task(void *param)
 {
 	int pulse_count = 0;
 
+	int static prev_pulse_count = 0;
+
 	const uint8_t pulse_offest = 50;
 
-	bool encoderButon = 0;
+	const uint8_t rotary_step = 4;
+
+	bool encoder_direction = 0;
+
+	bool negative_pulse_falg = 0;
+
+
 
     while (1)
     {
 
         pcnt_unit_get_count(pcnt_unit, &pulse_count);
 
-//        encoderButon = gpio_get_level(KNOB_BUTTON);
+        if(pulse_count < 0)
+        {
+        	negative_pulse_falg = true;
+        }
 
-        hEncoder.callback(pulse_count + pulse_offest, encoderButon);
+        pulse_count = pulse_count > 0 ? pulse_count : pulse_count * -1;
+
+        if((pulse_count - prev_pulse_count == rotary_step) || (pulse_count - prev_pulse_count == rotary_step * -1))
+        {
+
+        	if(negative_pulse_falg)
+        	{
+        		encoder_direction = pulse_count > prev_pulse_count ? false : true;
+        	}
+        	else
+        	{
+        		encoder_direction = pulse_count > prev_pulse_count ? true : false;
+        	}
+
+            hEncoder.callback(pulse_count + pulse_offest);
+
+            prev_pulse_count = pulse_count;
+
+            ESP_LOGI(encoder, "pulse count %d , direction %d", pulse_count, encoder_direction);
+        }
+
 
         vTaskDelay(250/portTICK_PERIOD_MS);
     }
