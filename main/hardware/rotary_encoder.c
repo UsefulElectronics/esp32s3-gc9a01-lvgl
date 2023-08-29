@@ -63,7 +63,7 @@ void encoder_handler_task(void *param)
 
 	bool encoder_direction = 0;
 
-	bool negative_pulse_falg = false;
+	static bool negative_pulse_falg = false;
 
 
 
@@ -72,11 +72,9 @@ void encoder_handler_task(void *param)
 
         pcnt_unit_get_count(pcnt_unit, &pulse_count);
 
-        if(pulse_count < -1)
+        if(pulse_count < -1  || (negative_pulse_falg == true && pulse_count == 0))
         {
         	negative_pulse_falg = true;
-
-        	 ESP_LOGI(encoder, "pulse is negative" );
         }
         else
         {
