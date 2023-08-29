@@ -63,7 +63,7 @@ void encoder_handler_task(void *param)
 
 	bool encoder_direction = 0;
 
-	bool negative_pulse_falg = 0;
+	bool negative_pulse_falg = false;
 
 
 
@@ -72,23 +72,34 @@ void encoder_handler_task(void *param)
 
         pcnt_unit_get_count(pcnt_unit, &pulse_count);
 
-        if(pulse_count < 0)
+        if(pulse_count < -1)
         {
         	negative_pulse_falg = true;
+
+        	 ESP_LOGI(encoder, "pulse is negative" );
         }
+        else
+        {
+        	negative_pulse_falg = false;
+        }
+
+
 
         pulse_count = pulse_count > 0 ? pulse_count : pulse_count * -1;
 
-        if((pulse_count - prev_pulse_count == rotary_step) || (pulse_count - prev_pulse_count == rotary_step * -1))
+        if((pulse_count - prev_pulse_count >= rotary_step) || (pulse_count - prev_pulse_count <= rotary_step * -1))
         {
 
         	if(negative_pulse_falg)
         	{
         		encoder_direction = pulse_count > prev_pulse_count ? false : true;
+
+        		ESP_LOGI(encoder, "negative");
         	}
         	else
         	{
         		encoder_direction = pulse_count > prev_pulse_count ? true : false;
+        		ESP_LOGI(encoder, "Positive");
         	}
 
             hEncoder.callback(pulse_count + pulse_offest);
