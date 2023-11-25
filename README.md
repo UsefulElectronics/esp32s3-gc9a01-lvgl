@@ -46,7 +46,9 @@ The human presence radar continuously sends detected object distance and its mov
 
 The nicely looking user interface is designed using Square line studio with LVGL library.
 
-The radar module is tested to detect moving objects and human behind obstacle like door or wall. check out the test results
+The radar module is tested to detect moving objects and human behind obstacle like door or wall. check out the test results.
+
+Reach out the Radar datasheet form this [link](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/HLK-LD1125H-24Gen.pdf).
 
 ![Circuit Diagram](https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/circuit%20diagram/HLK-LD1125H.png)
 
