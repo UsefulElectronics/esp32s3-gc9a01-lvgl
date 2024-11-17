@@ -88,15 +88,16 @@ void app_main(void)
 
 	displayConfig();
 
-	uart_config();
+	//uart_config();
 
 	gpio_config_ext_interrupt(KNOB_BUTTON, GPIO_INTR_NEGEDGE, gpio_isr_handle);
 
 	button_init(main_get_systick, gpio_get_level);
 	button_add(KNOB_BUTTON, 1, 1500, main_rotary_button_event);
 
-
 	encoder_init(main_encoder_cb);
+	
+	system_queue 		= xQueueCreate(10, sizeof(system_packet));
 
 //	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
 
@@ -111,7 +112,7 @@ void app_main(void)
 
 //     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 
-     xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
+//     xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 
      xTaskCreatePinnedToCore(uart_event_task, "uart event", 10000, NULL, 4, NULL, 0);
 
@@ -175,8 +176,6 @@ static void uart_reception_task(void *param)
    int16_t detectedDistance = 0;
 
    system_packet system_buffer = {0};
-
-   system_queue 		= xQueueCreate(10, sizeof(system_packet));
    for(;;)
    {
       //Waiting for UART packet to get received.

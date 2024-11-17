@@ -32,9 +32,9 @@
 #define EXAMPLE_PCNT_HIGH_LIMIT 50
 #define EXAMPLE_PCNT_LOW_LIMIT  -50
 
-#define EXAMPLE_EC11_GPIO_A 11
-#define EXAMPLE_EC11_GPIO_B 12
-#define KNOB_BUTTON 13
+#define EXAMPLE_EC11_GPIO_A 9
+#define EXAMPLE_EC11_GPIO_B 10
+#define KNOB_BUTTON 6//13
 /* ENUMORATIONS --------------------------------------------------------------*/
 
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/

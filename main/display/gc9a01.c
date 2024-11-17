@@ -72,8 +72,9 @@ void gc9a01_displayInit(void)
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
 
-        .rgb_endian = LCD_RGB_ENDIAN_RGB,
+        //.rgb_endian = LCD_RGB_ENDIAN_RGB, LCD_RGB_ENDIAN_BGR
 
+		//.rgb_ele_order = LCD_RGB_ENDIAN_RGB,
         .rgb_endian = LCD_RGB_ENDIAN_BGR,
 
         .bits_per_pixel = 16,
