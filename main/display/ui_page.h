@@ -30,10 +30,10 @@ typedef struct page
     void (*page_init)();
     void (*page_exit)();
     void (*page)();
-    struct menuItem *sub_menu;
-    struct menuItem *next_menu;
-    IconDef *icon;
-    uint8_t reserved : 8,
+    struct page *sub_menu;
+    struct page *next_menu;
+    void *icon;
+    uint8_t reserved : 8;
 
 }page_t;
 /* VARIABLES -----------------------------------------------------------------*/
