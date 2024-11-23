@@ -22,7 +22,15 @@
 /* MACROS --------------------------------------------------------------------*/
 #define OPTION_BUFFER_SIZE		30
 /* ENUMORATIONS --------------------------------------------------------------*/
-
+enum
+{
+	UI_PAGE_OPTION_WATCH = 0,
+	UI_PAGE_OPTION_MEASURE,
+	UI_PAGE_OPTION_TEMPERATURE,
+	UI_PAGE_OPTION_WEATHER,
+	UI_PAGE_OPTION_LAMP1,
+	UI_PAGE_OPTION_LAMP2,
+};
 /* STRUCTURES & TYPEDEFS -----------------------------------------------------*/
 typedef struct action
 {
