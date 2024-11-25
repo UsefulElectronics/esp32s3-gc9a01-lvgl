@@ -143,15 +143,7 @@ void lvgl_time_task(void* param)
 
         button_manager();
 
-        if(xQueueReceive(system_queue, (void * )&system_buffer, 2))
-        {
-        	_ui_radar(system_buffer.data[1], system_buffer.data[0]);
-        }
-
-
-
         // raise the task priority of LVGL and/or reduce the handler period can improve the performance
-//        vTaskDelay(pdMS_TO_TICKS(10));
 
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(10) );
 

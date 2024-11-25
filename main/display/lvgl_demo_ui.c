@@ -11,7 +11,7 @@
 
 static void ui_radar_screen_init(void);
 static void ui_watch_screen_init(void);
-static void ui_lamp_screen_init(void)
+static void ui_lamp_screen_init(void);
 
 static lv_obj_t *meter;
 static lv_obj_t * btn;
@@ -106,9 +106,10 @@ void example_lvgl_demo_ui(lv_disp_t *disp)
 	dis = lv_tileview_create(scr);
 	lv_obj_align(dis, LV_ALIGN_TOP_RIGHT, 0, 0);
 
+	ui_lamp 	= lv_tileview_add_tile(dis, 0, 0, LV_DIR_HOR);
 	ui_radar 	= lv_tileview_add_tile(dis, 0, 2, LV_DIR_HOR);
 	ui_Screen1 	= lv_tileview_add_tile(dis, 0, 1, LV_DIR_HOR);
-	ui_lamp 	= lv_tileview_add_tile(dis, 0, 0, LV_DIR_HOR);
+
 
 	//tv3 		= lv_tileview_add_tile(dis, 0, 2, LV_DIR_HOR);
 
@@ -313,7 +314,7 @@ static void ui_watch_screen_init(void)
 static void ui_lamp_screen_init(void)
 {
 
-    ui_lamp = lv_obj_create(NULL);
+    //ui_lamp = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_lamp, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
     ui_Panel9 = lv_obj_create(ui_lamp);
