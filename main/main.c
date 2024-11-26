@@ -99,7 +99,7 @@ void app_main(void)
 	
 	system_queue 		= xQueueCreate(10, sizeof(system_packet));
 
-//	 xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
+	xTaskCreatePinnedToCore(wirless_init_task, "WiFi init", 10000, NULL, 4, NULL, 0);
 
 	xTaskCreatePinnedToCore(encoder_handler_task, "encoder_handler", 10000, NULL, 4, NULL, 1);
 
@@ -110,7 +110,7 @@ void app_main(void)
 
 //     sntp_config();
 
-//     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
+     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 
 //     xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 
@@ -216,17 +216,17 @@ static void mqtt_msg_pars_task(void* param)
 			switch (mqttBuffer.eventType)
 			{
 				case MQTT_BROKER_CONNECT:
-					_ui_text_wifiIndicate(true);
+					//_ui_text_wifiIndicate(true);
 
 					mqtt_publish(MQTT_REQUEST_TOPIC, &publishRequest, 1);
 					break;
 				case MQTT_BROKER_DISCONNECT:
-					_ui_text_wifiIndicate(false);
+					//_ui_text_wifiIndicate(false);
 					break;
 				case MQTT_TOPIC_DATA_RX:
 
 
-					main_tempretureStringPrepare(mqttBuffer.data, targetString);
+					//main_tempretureStringPrepare(mqttBuffer.data, targetString);
 
 					_ui_temp_set(targetString);
 
