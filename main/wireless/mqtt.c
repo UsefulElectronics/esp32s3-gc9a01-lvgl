@@ -153,7 +153,7 @@ void mqtt_app_start(void)
 {
     esp_mqtt_client_config_t mqtt_cfg =
     {
-        .broker.address.uri = "mqtt://192.168.1.104:1990",
+        .broker.address.uri = "mqtt://192.168.1.103:1883",
     };
 
     mqttSubscribe_queue = xQueueCreate(10, sizeof(mqtt_buffer_t));

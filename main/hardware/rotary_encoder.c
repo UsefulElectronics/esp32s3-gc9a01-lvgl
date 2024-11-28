@@ -108,7 +108,7 @@ void encoder_handler_task(void *param)
         }
 
 
-        vTaskDelay(250/portTICK_PERIOD_MS);
+        vTaskDelay(50/portTICK_PERIOD_MS);
     }
 }
 /**

@@ -7,6 +7,7 @@
 // This demo UI is adapted from LVGL official example: https://docs.lvgl.io/master/widgets/extra/meter.html#simple-meter
 
 #include "lvgl_demo_ui.h"
+#include "extra/widgets/colorwheel/lv_colorwheel.h"
 
 
 static void ui_radar_screen_init(void);
@@ -53,6 +54,23 @@ lv_obj_t * ui_Label6;
 lv_obj_t * ui_Panel10;
 lv_obj_t * ui_Image8;
 lv_obj_t * ui_Image9;
+
+void ui_set_wheel_color(lv_color_hsv_t hsv) 
+{
+	lv_colorwheel_set_hsv(ui_Colorwheel2, (lv_color_hsv_t) hsv);
+}
+
+void ui_set_wheel_mode(lv_colorwheel_mode_t mode)
+{
+	lv_colorwheel_set_mode(ui_Colorwheel2,  mode);
+}
+
+void ui_set_lamp_state(bool state)
+{
+	//Control image hide flag depending on the passed state
+	lv_obj_add_flag(ui_Image9, (state & LV_OBJ_FLAG_HIDDEN) | LV_OBJ_FLAG_ADV_HITTEST);
+}
+
 
 
 void set_value(int32_t v, bool buttonStatus)

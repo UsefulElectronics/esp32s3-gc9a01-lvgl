@@ -16,6 +16,7 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "main.h"
+#include "extra/widgets/colorwheel/lv_colorwheel.h"
 #include "uart_config.h"
 #include "esp_interrupt.h"
 
@@ -50,12 +51,27 @@ typedef struct
 	uint8_t packet_size;
 	uint16_t data[SYSTEM_BUFFER_SIZE];
 }system_packet;
+
+typedef struct {
+    uint16_t hue;
+    uint8_t saturation;
+    uint8_t brightness;
+} system_hsv_t;
+
+typedef struct
+{
+	bool on_state;
+	system_hsv_t color;
+	uint16_t encoder_rotary_angle;
+}system_lamp_data_t;
+
+char main_mqtt_topic_buffer[50];
 /* VARIABLES -----------------------------------------------------------------*/
 static const char *main = "main";
 char targetString[10] = {0};
 
 static const char* TAG = "main";
-
+static system_lamp_data_t hLamp = {0};
 static QueueHandle_t system_queue;
 
 TaskHandle_t hMain_uiTask 				= NULL;
@@ -74,7 +90,7 @@ static void event_handle_task(void* param);
 
 static void main_rotary_button_event(void);
 static uint32_t main_get_systick(void);
-
+static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic);
 
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
@@ -217,14 +233,53 @@ static void mqtt_msg_pars_task(void* param)
 			{
 				case MQTT_BROKER_CONNECT:
 					//_ui_text_wifiIndicate(true);
-
-					mqtt_publish(MQTT_REQUEST_TOPIC, &publishRequest, 1);
+					main_mqtt_topic_string (1, MQTT_LAMP_GETHSV);
+					
+					mqtt_publish(main_mqtt_topic_string (1, MQTT_LAMP_GETHSV), &publishRequest, 0);
 					break;
 				case MQTT_BROKER_DISCONNECT:
 					//_ui_text_wifiIndicate(false);
 					break;
 				case MQTT_TOPIC_DATA_RX:
+					if(strcmp(mqttBuffer.topicString, main_mqtt_topic_string (1, MQTT_LAMP_GETHSV)))
+					{
+						 sscanf(mqttBuffer.data, "%d, %d, %d",(int*) &hLamp.color.hue, (int*) &hLamp.color.saturation, (int*) &hLamp.color.brightness);
+		
+						 ESP_LOGI(TAG, "mqtt set hsv %s", mqttBuffer.data);
+						 
+						 ui_set_wheel_color((lv_color_hsv_t) hLamp.color);
 
+		
+						 led_strip_hsv2rgb(hWs2812.hue, hWs2812.sat, hWs2812.bright, &hWs2812.red, &hWs2812.green, &hWs2812.blue);
+		
+						 system_led_buffer_load(hWs2812.red, hWs2812.green, hWs2812.blue);
+		
+						 rmt_channel_send(hWs2812.led_strip_buffer, RGB_COLOR_COUNT * RGB_LED_NUMBER);
+						
+						ESP_LOGI(TAG, "MQTT_LAMP_GETHSV, ");
+					}
+					else if(strcmp(mqttBuffer.topicString, main_mqtt_topic_string (1, MQTT_LAMP_GETON)))
+					{
+										 bool led_Status = atoi(mqttSubscribeBuffer.data);
+
+				 ESP_LOGI(TAG, "mqtt set status %s", mqttSubscribeBuffer.data);
+
+				 if(led_Status)
+				 {
+					 system_led_buffer_load(hWs2812.red, hWs2812.green, hWs2812.blue);
+
+					 hWs2812.led_strip_status = true;
+				 }
+				 else
+				 {
+					 system_led_buffer_load(0, 0, 0);
+
+					 hWs2812.led_strip_status = false;
+				 }
+				 rmt_channel_send(hWs2812.led_strip_buffer, RGB_COLOR_COUNT * RGB_LED_NUMBER);
+
+				 memset(&mqttSubscribeBuffer, 0, sizeof(mqtt_buffer_t));
+					}
 
 					//main_tempretureStringPrepare(mqttBuffer.data, targetString);
 
@@ -329,6 +384,14 @@ static void main_rotary_button_event(void)
 	if(button_state == BUTTON_CLICKED) 
 	{
 		ESP_LOGI(TAG, "Button pressed");
+		
+							sprintf(temp_publish_string, "%d",hWs2812.led_strip_status);
+
+					mqtt_publish(MQTT_RGBLED_GET_ON, temp_publish_string, 1);
+
+					sprintf(temp_publish_string, "%d, %d, %d",(int) hWs2812.hue, (int) hWs2812.sat, (int) hWs2812.bright);
+
+					mqtt_publish(MQTT_RGBLED_GET_HSV, temp_publish_string, strlen(temp_publish_string));
 	}
 	else if (button_state == BUTTON_LONG_PRESSED)
 	{
@@ -338,5 +401,14 @@ static void main_rotary_button_event(void)
 static uint32_t main_get_systick(void)
 {
 	return SYS_TICK();
+}
+
+static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic)
+{
+	memset(main_mqtt_topic_buffer, 0, sizeof(main_mqtt_topic_buffer));
+	
+	sprintf(main_mqtt_topic_buffer, "%d%s", device_index, mqtt_topic);
+	
+	return main_mqtt_topic_buffer;
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

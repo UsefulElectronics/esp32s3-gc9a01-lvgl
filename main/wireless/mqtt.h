@@ -45,6 +45,12 @@ extern QueueHandle_t mqttSubscribe_queue;
 #define MQTT_REQUEST_TOPIC 		"request"
 #define MQTT_TEMPERATURE_TOPIC	"temperature"
 
+#define MQTT_LAMP_SETON			"/rgbled/seton"
+#define MQTT_LAMP_GETON			"/rgbled/geton"
+#define MQTT_LAMP_SETHSV		"/rgbled/sethsv"
+#define MQTT_LAMP_GETHSV		"/rgbled/gethsv"
+
+
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 typedef enum
 {
