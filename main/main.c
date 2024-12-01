@@ -248,42 +248,19 @@ static void mqtt_msg_pars_task(void* param)
 						 ESP_LOGI(TAG, "mqtt set hsv %s", mqttBuffer.data);
 						 
 						 ui_set_wheel_color((lv_color_hsv_t) hLamp.color);
-
-		
-						 led_strip_hsv2rgb(hWs2812.hue, hWs2812.sat, hWs2812.bright, &hWs2812.red, &hWs2812.green, &hWs2812.blue);
-		
-						 system_led_buffer_load(hWs2812.red, hWs2812.green, hWs2812.blue);
-		
-						 rmt_channel_send(hWs2812.led_strip_buffer, RGB_COLOR_COUNT * RGB_LED_NUMBER);
 						
 						ESP_LOGI(TAG, "MQTT_LAMP_GETHSV, ");
 					}
 					else if(strcmp(mqttBuffer.topicString, main_mqtt_topic_string (1, MQTT_LAMP_GETON)))
 					{
-										 bool led_Status = atoi(mqttSubscribeBuffer.data);
+						bool lamp_status = atoi(mqttBuffer.data);
+						
+						ui_set_lamp_state(lamp_status);
+						
+						hLamp.on_state = lamp_status;
 
-				 ESP_LOGI(TAG, "mqtt set status %s", mqttSubscribeBuffer.data);
-
-				 if(led_Status)
-				 {
-					 system_led_buffer_load(hWs2812.red, hWs2812.green, hWs2812.blue);
-
-					 hWs2812.led_strip_status = true;
-				 }
-				 else
-				 {
-					 system_led_buffer_load(0, 0, 0);
-
-					 hWs2812.led_strip_status = false;
-				 }
-				 rmt_channel_send(hWs2812.led_strip_buffer, RGB_COLOR_COUNT * RGB_LED_NUMBER);
-
-				 memset(&mqttSubscribeBuffer, 0, sizeof(mqtt_buffer_t));
+				 		ESP_LOGI(TAG, "mqtt set status %s", mqttBuffer.data);
 					}
-
-					//main_tempretureStringPrepare(mqttBuffer.data, targetString);
-
-					_ui_temp_set(targetString);
 
 					break;
 				default:
@@ -380,18 +357,20 @@ static void main_tempretureStringPrepare(char* tempString, char* targetString)
 }
 static void main_rotary_button_event(void)
 {
+	char temp_publish_string[5] = {0};
 	button_state_t button_state = button_state_get(KNOB_BUTTON);
 	if(button_state == BUTTON_CLICKED) 
 	{
 		ESP_LOGI(TAG, "Button pressed");
+		//reverse value for state toggling 
+		hLamp.on_state ^= 1;
 		
-							sprintf(temp_publish_string, "%d",hWs2812.led_strip_status);
+		sprintf(temp_publish_string, "%d",hLamp.on_state);
 
-					mqtt_publish(MQTT_RGBLED_GET_ON, temp_publish_string, 1);
+		mqtt_publish(MQTT_LAMP_SETON, temp_publish_string , strlen(temp_publish_string));
+		
+		//Change wheel mode
 
-					sprintf(temp_publish_string, "%d, %d, %d",(int) hWs2812.hue, (int) hWs2812.sat, (int) hWs2812.bright);
-
-					mqtt_publish(MQTT_RGBLED_GET_HSV, temp_publish_string, strlen(temp_publish_string));
 	}
 	else if (button_state == BUTTON_LONG_PRESSED)
 	{
