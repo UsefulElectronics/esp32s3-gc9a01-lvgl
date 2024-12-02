@@ -363,7 +363,7 @@ static void ui_lamp_screen_init(void)
     lv_obj_set_style_bg_color(ui_Switch1, lv_color_hex(0xD50000), LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_Switch1, lv_color_hex(0x293031), LV_PART_KNOB | LV_STATE_PRESSED);
-    lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_PRESSED);
+    lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_PRESSED);ing pong 
 
     ui_Switch3 = lv_switch_create(ui_Panel9);
     lv_obj_set_width(ui_Switch3, 29);

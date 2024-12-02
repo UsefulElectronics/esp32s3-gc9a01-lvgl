@@ -68,13 +68,10 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         mqttSubscribeBuffer.eventType = MQTT_BROKER_CONNECT;
 
         xQueueSendToBack(mqttSubscribe_queue, (void *)&mqttSubscribeBuffer, portMAX_DELAY);
-        esp_mqtt_client_subscribe(client, MQTT_TEMPERATURE_TOPIC, 0);
-//
-//        esp_mqtt_client_subscribe(client, MQTT_COLOR_TOPIC, 0);
-//
-//        esp_mqtt_client_subscribe(client, MQTT_MODE_TOPIC, 0);
-//
-//        esp_mqtt_client_subscribe(client, MQTT_FREQUENCY_TOPIC, 0);
+        
+        esp_mqtt_client_subscribe(client, MQTT_LAMP_GETON, 0);
+        
+        esp_mqtt_client_subscribe(client, MQTT_LAMP_GETHSV, 0);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
