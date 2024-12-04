@@ -42,7 +42,9 @@
 
 
 /* MACROS --------------------------------------------------------------------*/
-#define SYSTEM_BUFFER_SIZE		4
+#define SYSTEM_BUFFER_SIZE					4
+#define SYSTEM_ROTARY_ENCODER_STEP_SIZE		4
+#define SYSTEM_LAMP_MODE_COUNT				3 	//see lv_colorwheel_mode_t
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
@@ -62,7 +64,8 @@ typedef struct
 {
 	bool on_state;
 	system_hsv_t color;
-	uint16_t encoder_rotary_angle;
+	uint32_t encoder_rotary_angle;
+	uint8_t control_mode;
 }system_lamp_data_t;
 
 char main_mqtt_topic_buffer[50];
@@ -78,7 +81,7 @@ TaskHandle_t hMain_uiTask 				= NULL;
 TaskHandle_t hMain_eventTask			= NULL;
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/
 static void time_config(void);
-static void main_encoder_cb(uint8_t knobPosition);
+static void main_encoder_cb(uint32_t knobPosition);
 static void main_tempretureStringPrepare(char* tempString, char* targetString);
 static void lvgl_time_task(void*param);
 static void wirless_init_task(void* param);
@@ -170,8 +173,44 @@ void lvgl_time_task(void* param)
  *
  * @param 	knobPosition	: Read encoder position value.
  */
-static void main_encoder_cb(uint8_t knobPosition)
+static void main_encoder_cb(uint32_t knobPosition)
 {
+	static uint32_t prev_encoder_value = 0;
+	
+	int8_t temp_rotation_direction = 0;
+	
+	if(prev_encoder_value > knobPosition)
+	{
+		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE
+
+	}
+	else if(prev_encoder_value < knobPosition)
+	{
+		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE * -1
+
+	}
+	switch (hLamp.control_mode) 
+	{
+		case 0:
+			break;
+			hLamp.color.hue += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			
+		case 1:
+			hLamp.color.saturation += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			break;
+			
+		case 2:
+			hLamp.color.brightness += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			break;
+	}
+
+	//Start timer to publish light data after 1 s time out 
+
+
+	
+	ui_set_wheel_mode(hLamp.control_mode);
+	
+	prev_encoder_value = knobPosition;
 //	set_value((int32_t) knobPosition, knobButtonStatus);
 }
 
@@ -374,6 +413,16 @@ static void main_rotary_button_event(void)
 	}
 	else if (button_state == BUTTON_LONG_PRESSED)
 	{
+		++hLamp.control_mode;
+		
+		if(hLamp.control_mode <= SYSTEM_LAMP_MODE_COUNT)
+		{
+			hLamp.control_mode = 0;
+		}
+		
+		ui_set_wheel_mode(hLamp.control_mode);
+		
+	
 		ESP_LOGI(TAG, "Button long pressed");
 	}
 }
