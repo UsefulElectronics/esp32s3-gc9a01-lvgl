@@ -55,9 +55,9 @@ lv_obj_t * ui_Panel10;
 lv_obj_t * ui_Image8;
 lv_obj_t * ui_Image9;
 
-void ui_set_wheel_color(lv_color_hsv_t hsv) 
+void ui_set_wheel_color(lv_color_hsv_t* hsv) 
 {
-	lv_colorwheel_set_hsv(ui_Colorwheel2, (lv_color_hsv_t) hsv);
+	lv_colorwheel_set_hsv(ui_Colorwheel2, *hsv);
 }
 
 void ui_set_wheel_mode(lv_colorwheel_mode_t mode)
@@ -363,7 +363,7 @@ static void ui_lamp_screen_init(void)
     lv_obj_set_style_bg_color(ui_Switch1, lv_color_hex(0xD50000), LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_Switch1, lv_color_hex(0x293031), LV_PART_KNOB | LV_STATE_PRESSED);
-    lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_PRESSED);ing pong 
+    lv_obj_set_style_bg_opa(ui_Switch1, 255, LV_PART_KNOB | LV_STATE_PRESSED);
 
     ui_Switch3 = lv_switch_create(ui_Panel9);
     lv_obj_set_width(ui_Switch3, 29);

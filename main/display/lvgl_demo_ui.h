@@ -71,7 +71,7 @@ LV_IMG_DECLARE(ui_img_bg3_png);
 
 /* FUNCTIONS DECLARATION -----------------------------------------------------*/
 void set_value(int32_t v, bool buttonStatus);
-void ui_set_wheel_color(lv_color_hsv_t hsv);
+void ui_set_wheel_color(lv_color_hsv_t* hsv);
 void ui_set_wheel_mode(lv_colorwheel_mode_t mode);
 void ui_set_lamp_state(bool state);
 void ui_init(void);

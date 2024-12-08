@@ -34,6 +34,7 @@ QueueHandle_t mqttSubscribe_queue;
 mqtt_buffer_t mqttSubscribeBuffer;
 
 static esp_mqtt_client_handle_t mqttClient = {0};
+static esp_mqtt_client_config_t mqtt_cfg = {0};
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -148,10 +149,7 @@ void mqtt_publish(const char *topic, const char *data, int len)
  */
 void mqtt_app_start(void)
 {
-    esp_mqtt_client_config_t mqtt_cfg =
-    {
-        .broker.address.uri = "mqtt://192.168.1.103:1883",
-    };
+    mqtt_cfg.broker.address.uri = "mqtt://192.168.1.103:1883",
 
     mqttSubscribe_queue = xQueueCreate(10, sizeof(mqtt_buffer_t));
 

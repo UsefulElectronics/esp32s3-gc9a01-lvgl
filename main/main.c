@@ -103,6 +103,7 @@ static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic);
  */
 void app_main(void)
 {
+
 	gc9a01_displayInit();
 
 	displayConfig();
@@ -129,17 +130,13 @@ void app_main(void)
 
 //     sntp_config();
 
-     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
+ 	vTaskDelay(pdMS_TO_TICKS(15000));
+	
+	xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
+    
+    xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
 
-//     xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
-
-//     xTaskCreatePinnedToCore(uart_event_task, "uart event", 10000, NULL, 4, NULL, 0);
-
-//     xTaskCreatePinnedToCore(uart_transmission_task, "USART TX handling task", 10000, NULL, 4, NULL, 0);
-
-//     xTaskCreatePinnedToCore(uart_reception_task, "USART RX handling task", 10000, NULL, 4, NULL, 0);
-
-     xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
+     //xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 
      xTaskCreatePinnedToCore(event_handle_task, "lvgl_time_task", 10000, NULL, 4, &hMain_eventTask, 1);
 }
@@ -181,12 +178,12 @@ static void main_encoder_cb(uint32_t knobPosition)
 	
 	if(prev_encoder_value > knobPosition)
 	{
-		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE
+		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE;
 
 	}
 	else if(prev_encoder_value < knobPosition)
 	{
-		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE * -1
+		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE * -1;
 
 	}
 	switch (hLamp.control_mode) 
@@ -286,7 +283,7 @@ static void mqtt_msg_pars_task(void* param)
 		
 						 ESP_LOGI(TAG, "mqtt set hsv %s", mqttBuffer.data);
 						 
-						 ui_set_wheel_color((lv_color_hsv_t) hLamp.color);
+						 ui_set_wheel_color(  &hLamp.color);
 						
 						ESP_LOGI(TAG, "MQTT_LAMP_GETHSV, ");
 					}
@@ -403,6 +400,8 @@ static void main_rotary_button_event(void)
 		ESP_LOGI(TAG, "Button pressed");
 		//reverse value for state toggling 
 		hLamp.on_state ^= 1;
+		
+		ui_set_lamp_state(hLamp.on_state);
 		
 		sprintf(temp_publish_string, "%d",hLamp.on_state);
 
