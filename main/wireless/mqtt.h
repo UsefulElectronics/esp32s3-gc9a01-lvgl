@@ -45,10 +45,13 @@ extern QueueHandle_t mqttSubscribe_queue;
 #define MQTT_REQUEST_TOPIC 		"request"
 #define MQTT_TEMPERATURE_TOPIC	"temperature"
 
-#define MQTT_LAMP_SETON			"1/rgbled/seton"
-#define MQTT_LAMP_GETON			"1/rgbled/geton"
-#define MQTT_LAMP_SETHSV		"1/rgbled/sethsv"
-#define MQTT_LAMP_GETHSV		"1/rgbled/gethsv"
+#define MQTT_LAMP_SETON			"2/rgbled/seton"
+#define MQTT_LAMP_GETON			"2/rgbled/geton"
+#define MQTT_LAMP_SETHSV		"2/rgbled/sethsv"
+#define MQTT_LAMP_GETHSV		"2/rgbled/gethsv"
+
+#define MQTT_BROKER_URI			"mqtt://192.168.1.103:1883"
+#define MQTT_CLIENT_ID			"Encoder"
 
 
 /* PRIVATE FUNCTIONS DECLARATION ---------------------------------------------*/

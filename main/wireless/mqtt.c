@@ -149,7 +149,8 @@ void mqtt_publish(const char *topic, const char *data, int len)
  */
 void mqtt_app_start(void)
 {
-    mqtt_cfg.broker.address.uri = "mqtt://192.168.1.103:1883",
+    mqtt_cfg.broker.address.uri 	= MQTT_BROKER_URI,
+    mqtt_cfg.credentials.client_id 	= MQTT_CLIENT_ID,
 
     mqttSubscribe_queue = xQueueCreate(10, sizeof(mqtt_buffer_t));
 

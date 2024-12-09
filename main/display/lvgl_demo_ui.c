@@ -68,7 +68,15 @@ void ui_set_wheel_mode(lv_colorwheel_mode_t mode)
 void ui_set_lamp_state(bool state)
 {
 	//Control image hide flag depending on the passed state
-	lv_obj_add_flag(ui_Image9, (state & LV_OBJ_FLAG_HIDDEN) | LV_OBJ_FLAG_ADV_HITTEST);
+	if(state)
+	{
+		lv_obj_add_flag(ui_Image9,LV_OBJ_FLAG_HIDDEN);
+	}
+	else 
+	{
+		lv_obj_clear_flag(ui_Image9, LV_OBJ_FLAG_HIDDEN);
+	}
+			
 }
 
 
