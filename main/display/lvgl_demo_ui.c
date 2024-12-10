@@ -7,6 +7,7 @@
 // This demo UI is adapted from LVGL official example: https://docs.lvgl.io/master/widgets/extra/meter.html#simple-meter
 
 #include "lvgl_demo_ui.h"
+#include "core/lv_obj.h"
 #include "extra/widgets/colorwheel/lv_colorwheel.h"
 
 
@@ -20,6 +21,8 @@ static lv_disp_rot_t rotation = LV_DISP_ROT_NONE;
 static lv_disp_t *lv_display;
 static lv_meter_indicator_t *indic;
 static lv_style_t bgStyle;
+
+static lv_color_hsv_t ui_color_wheel_obj = {0};
 
 watch_t realTime = {0};
 
@@ -57,6 +60,8 @@ lv_obj_t * ui_Image9;
 
 void ui_set_wheel_color(lv_color_hsv_t* hsv) 
 {
+	memcpy(&ui_color_wheel_obj, hsv, sizeof(lv_color_hsv_t));
+	
 	lv_colorwheel_set_hsv(ui_Colorwheel2, *hsv);
 }
 
@@ -70,14 +75,40 @@ void ui_set_lamp_state(bool state)
 	//Control image hide flag depending on the passed state
 	if(state)
 	{
-		lv_obj_add_flag(ui_Image9,LV_OBJ_FLAG_HIDDEN);
+		lv_obj_clear_flag(ui_Image9, LV_OBJ_FLAG_HIDDEN);
 	}
 	else 
 	{
-		lv_obj_clear_flag(ui_Image9, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(ui_Image9,LV_OBJ_FLAG_HIDDEN);
 	}
-			
 }
+
+void ui_set_wifi_switch_state(bool state)
+{
+	if(state)
+	{
+		lv_obj_add_state(ui_Switch3, LV_STATE_CHECKED);
+		
+	}
+	else 
+	{
+		lv_obj_clear_state(ui_Switch3, LV_STATE_CHECKED);
+	}
+}
+
+void ui_set_mqtt_switch_state(bool state)
+{
+	if(state)
+	{
+		lv_obj_add_state(ui_Switch1, LV_STATE_CHECKED);
+		
+	}
+	else 
+	{
+		lv_obj_clear_state(ui_Switch1, LV_STATE_CHECKED);
+	}
+}
+
 
 
 
@@ -105,15 +136,6 @@ void set_value(int32_t v, bool buttonStatus)
     	}
         lv_obj_add_style(disObject, &bgStyle, 0);
         lv_style_set_bg_color(&bgStyle, bgColor);
-
-
-
-//        rotation++;
-//        if (rotation > LV_DISP_ROT_270)
-//        {
-//            rotation = LV_DISP_ROT_NONE;
-//        }
-//        lv_disp_set_rotation(lv_display, rotation);
     }
 
 }
@@ -444,5 +466,6 @@ static void ui_lamp_screen_init(void)
     lv_obj_add_flag(ui_Image9, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
     lv_obj_clear_flag(ui_Image9, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_img_set_zoom(ui_Image9, 400);
+
 }
 

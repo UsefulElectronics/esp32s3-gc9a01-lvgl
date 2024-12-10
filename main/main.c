@@ -39,6 +39,7 @@
 
 #include "gpio/gpio_config.h"
 #include "esp_log.h"
+#include <stdbool.h>
 
 
 /* MACROS --------------------------------------------------------------------*/
@@ -94,7 +95,7 @@ static void event_handle_task(void* param);
 static void main_rotary_button_event(void);
 static uint32_t main_get_systick(void);
 static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic);
-
+static void main_lamp_init(void);
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
@@ -107,6 +108,8 @@ void app_main(void)
 	gc9a01_displayInit();
 
 	displayConfig();
+	
+	main_lamp_init();
 
 	//uart_config();
 
@@ -203,9 +206,9 @@ static void main_encoder_cb(uint32_t knobPosition)
 
 	//Start timer to publish light data after 1 s time out 
 
-
+	ui_set_wheel_color(  &hLamp.color);
 	
-	ui_set_wheel_mode(hLamp.control_mode);
+	//ui_set_wheel_mode(hLamp.control_mode);
 	
 	prev_encoder_value = knobPosition;
 //	set_value((int32_t) knobPosition, knobButtonStatus);
@@ -272,9 +275,12 @@ static void mqtt_msg_pars_task(void* param)
 					main_mqtt_topic_string (1, MQTT_LAMP_GETHSV);
 					
 					mqtt_publish(main_mqtt_topic_string (1, MQTT_LAMP_GETHSV), &publishRequest, 0);
+					
+					ui_set_mqtt_switch_state(true);
 					break;
 				case MQTT_BROKER_DISCONNECT:
 					//_ui_text_wifiIndicate(false);
+					ui_set_mqtt_switch_state(false);
 					break;
 				case MQTT_TOPIC_DATA_RX:
 					if(strcmp(mqttBuffer.topicString, main_mqtt_topic_string (1, MQTT_LAMP_GETHSV)))
@@ -402,7 +408,7 @@ static void main_rotary_button_event(void)
 		hLamp.on_state ^= 1;
 		
 		ui_set_lamp_state(hLamp.on_state);
-		
+				
 		sprintf(temp_publish_string, "%d",hLamp.on_state);
 
 		mqtt_publish(MQTT_LAMP_SETON, temp_publish_string , strlen(temp_publish_string));
@@ -437,5 +443,11 @@ static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic)
 	sprintf(main_mqtt_topic_buffer, "%d%s", device_index, mqtt_topic);
 	
 	return main_mqtt_topic_buffer;
+}
+
+static void main_lamp_init(void)
+{
+	hLamp.color.brightness = 100;
+	hLamp.color.saturation = 100;
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
