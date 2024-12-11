@@ -34,7 +34,7 @@
 
 
 #include "time.h"
-
+#include <math.h>
 #include "lwip/ip_addr.h"
 
 #include "gpio/gpio_config.h"
@@ -193,14 +193,20 @@ static void main_encoder_cb(uint32_t knobPosition)
 	{
 		case 0:
 			break;
-			hLamp.color.hue += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			hLamp.color.hue += temp_rotation_direction;
 			
+			hLamp.color.hue = fmax(0, fmin(360, hLamp.color.hue));
 		case 1:
-			hLamp.color.saturation += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			hLamp.color.saturation += temp_rotation_direction;
+			
+			hLamp.color.saturation = fmax(0, fmin(100, hLamp.color.saturation));
 			break;
 			
 		case 2:
-			hLamp.color.brightness += SYSTEM_ROTARY_ENCODER_STEP_SIZE;
+			hLamp.color.brightness += temp_rotation_direction;
+			
+			// Clamp brightness between 0 and 100
+   			hLamp.color.brightness = fmax(0, fmin(100, hLamp.color.brightness));
 			break;
 	}
 
