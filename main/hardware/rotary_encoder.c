@@ -99,8 +99,10 @@ void encoder_handler_task(void *param)
         		encoder_direction = pulse_count > prev_pulse_count ? true : false;
         		ESP_LOGI(encoder, "Positive");
         	}
+        	
+        	hEncoder.callback(encoder_direction);
 
-            hEncoder.callback(pulse_count + pulse_offest);
+           // hEncoder.callback(pulse_count + pulse_offest);
 
             prev_pulse_count = pulse_count;
 

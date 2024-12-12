@@ -56,9 +56,9 @@ typedef struct
 }system_packet;
 
 typedef struct {
-    uint16_t hue;
-    uint8_t saturation;
-    uint8_t brightness;
+    int16_t hue;
+    int8_t saturation;
+    int8_t brightness;
 } system_hsv_t;
 
 typedef struct
@@ -179,12 +179,12 @@ static void main_encoder_cb(uint32_t knobPosition)
 	
 	int8_t temp_rotation_direction = 0;
 	
-	if(prev_encoder_value > knobPosition)
+	if(!knobPosition)
 	{
 		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE;
 
 	}
-	else if(prev_encoder_value < knobPosition)
+	else
 	{
 		temp_rotation_direction = SYSTEM_ROTARY_ENCODER_STEP_SIZE * -1;
 
@@ -192,10 +192,11 @@ static void main_encoder_cb(uint32_t knobPosition)
 	switch (hLamp.control_mode) 
 	{
 		case 0:
-			break;
 			hLamp.color.hue += temp_rotation_direction;
 			
 			hLamp.color.hue = fmax(0, fmin(360, hLamp.color.hue));
+			break;
+
 		case 1:
 			hLamp.color.saturation += temp_rotation_direction;
 			
@@ -213,6 +214,8 @@ static void main_encoder_cb(uint32_t knobPosition)
 	//Start timer to publish light data after 1 s time out 
 
 	ui_set_wheel_color(  &hLamp.color);
+	
+	ESP_LOGI(TAG, "hue value %d brightness value %d sat value %d step value %d mode %d", hLamp.color.hue, hLamp.color.brightness ,hLamp.color.saturation, temp_rotation_direction, hLamp.control_mode);
 	
 	//ui_set_wheel_mode(hLamp.control_mode);
 	
@@ -426,7 +429,7 @@ static void main_rotary_button_event(void)
 	{
 		++hLamp.control_mode;
 		
-		if(hLamp.control_mode <= SYSTEM_LAMP_MODE_COUNT)
+		if(hLamp.control_mode >= SYSTEM_LAMP_MODE_COUNT)
 		{
 			hLamp.control_mode = 0;
 		}
@@ -455,5 +458,6 @@ static void main_lamp_init(void)
 {
 	hLamp.color.brightness = 100;
 	hLamp.color.saturation = 100;
+	hLamp.control_mode     = 0;
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/
