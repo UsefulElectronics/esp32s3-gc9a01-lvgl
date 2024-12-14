@@ -109,4 +109,46 @@ char* wifi_get_connection_ip(void)
     return NULL;
 }
 
+uint16_t wifi_scan_start(void)
+{
+	    // Configure the scan parameters
+    wifi_scan_config_t scan_config = 
+    {
+        .ssid = NULL,
+        .bssid = NULL,
+        .channel = 0,
+        .show_hidden = true
+    };
+
+    // Start the Wi-Fi scan
+    ESP_ERROR_CHECK(esp_wifi_scan_start(&scan_config, true));  // Blocking scan
+    ESP_LOGI(TAG, "Wi-Fi scan completed");
+    // Get the number of found APs
+    uint16_t number = 0;
+    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&number));
+    ESP_LOGI(TAG, "Found %d access points", number);
+    
+    return number;
+}
+
+uint16_t wifi_scan_result(uint16_t number)
+{
+	    // Allocate memory to store AP records
+    wifi_ap_record_t *ap_records = malloc(number * sizeof(wifi_ap_record_t));
+    if (ap_records == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for AP records");
+        return;
+    }
+    // Retrieve the scan results
+    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_records));
+
+    // Log the scan results
+    for (int i = 0; i < number; i++) {
+        ESP_LOGI(TAG, "SSID: %s, RSSI: %d, Channel: %d",
+                 ap_records[i].ssid, ap_records[i].rssi, ap_records[i].primary);
+    }
+
+    // Free allocated memory
+    free(ap_records);
+}
 /**************************  Useful Electronics  ****************END OF FILE***/
