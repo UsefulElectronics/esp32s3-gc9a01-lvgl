@@ -36,6 +36,7 @@
 #include "time.h"
 #include <math.h>
 #include "lwip/ip_addr.h"
+#include "timer/systimer.h"
 
 #include "gpio/gpio_config.h"
 #include "esp_log.h"
@@ -90,12 +91,13 @@ static void mqtt_msg_pars_task(void* param);
 static void time_handle_task(void* param);
 static void uart_reception_task(void *param);
 static void event_handle_task(void* param);
-
+static void main_system_timer_task(void* param);
 
 static void main_rotary_button_event(void);
 static uint32_t main_get_systick(void);
 static char* main_mqtt_topic_string (uint16_t device_index, char* mqtt_topic);
 static void main_lamp_init(void);
+static void main_lamp_param_update(void);
 
 /* FUNCTION PROTOTYPES -------------------------------------------------------*/
 /**
@@ -110,6 +112,8 @@ void app_main(void)
 	displayConfig();
 	
 	main_lamp_init();
+	
+	systimer_init();
 
 	//uart_config();
 
@@ -138,6 +142,8 @@ void app_main(void)
 	xTaskCreatePinnedToCore(lvgl_time_task, "lvgl_time_task", 10000, NULL, 4, NULL, 1);
     
     xTaskCreatePinnedToCore(mqtt_msg_pars_task, "MQTT parser", 10000, NULL, 4, NULL, 1);
+    
+     xTaskCreatePinnedToCore(main_system_timer_task, "system timer task", 10000, NULL, 4, NULL, 1);
 
      //xTaskCreatePinnedToCore(time_handle_task, "Real time Handler", 10000, NULL, 4, NULL, 1);
 
@@ -215,6 +221,8 @@ static void main_encoder_cb(uint32_t knobPosition)
 
 	ui_set_wheel_color(  &hLamp.color);
 	
+	systimer_start(40, 1, main_lamp_param_update);
+	
 	ESP_LOGI(TAG, "hue value %d brightness value %d sat value %d step value %d mode %d", hLamp.color.hue, hLamp.color.brightness ,hLamp.color.saturation, temp_rotation_direction, hLamp.control_mode);
 	
 	//ui_set_wheel_mode(hLamp.control_mode);
@@ -265,6 +273,18 @@ static void wirless_init_task(void* param)
 	mqtt_app_start();
 
 	vTaskDelete(NULL);
+}
+
+static void main_system_timer_task(void* param)
+{
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+	while(1)
+	{
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(10));
+		
+		systimer_tick_handler();
+	}
 }
 
 static void mqtt_msg_pars_task(void* param)
@@ -459,5 +479,14 @@ static void main_lamp_init(void)
 	hLamp.color.brightness = 100;
 	hLamp.color.saturation = 100;
 	hLamp.control_mode     = 0;
+}
+
+static void main_lamp_param_update(void)
+{
+	char temp_publish_string[30] = {0};
+	
+	sprintf(temp_publish_string, "%d, %d, %d", hLamp.color.hue, hLamp.color.saturation, hLamp.color.brightness);
+
+	mqtt_publish(MQTT_LAMP_SETHSV, temp_publish_string , strlen(temp_publish_string));
 }
 /*************************************** USEFUL ELECTRONICS*****END OF FILE****/

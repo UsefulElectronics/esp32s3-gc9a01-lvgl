@@ -17,7 +17,7 @@
 /* INCLUDES ------------------------------------------------------------------*/
 #include "systimer.h"
 #include <stdint.h>
-
+#include <stdio.h>
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
 typedef struct 

@@ -21,4 +21,5 @@ SRCS "display/lvgl_demo_ui.c"
 SRCS "display/display.c"
 SRCS "display/gc9a01.c"
 SRCS "gpio/gpio_config.c"
+SRCS "timer/systimer.c"
 INCLUDE_DIRS ".")
