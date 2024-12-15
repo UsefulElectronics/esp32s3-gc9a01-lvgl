@@ -23,6 +23,7 @@
 
 /* INCLUDES ------------------------------------------------------------------*/
 #include "wifi_connect.h"
+#include <stdio.h>
 
 /* PRIVATE STRUCTRES ---------------------------------------------------------*/
 
@@ -131,19 +132,22 @@ uint16_t wifi_scan_start(void)
     return number;
 }
 
-uint16_t wifi_scan_result(uint16_t number)
+char* wifi_scan_result(uint16_t number)
 {
 	    // Allocate memory to store AP records
     wifi_ap_record_t *ap_records = malloc(number * sizeof(wifi_ap_record_t));
     if (ap_records == NULL) {
         ESP_LOGE(TAG, "Failed to allocate memory for AP records");
-        return;
+        return NULL;
     }
     // Retrieve the scan results
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_records));
 
     // Log the scan results
-    for (int i = 0; i < number; i++) {
+    sprintf((char *)wifi_memory, "SSID: %s, RSSI: %d, Channel: %d",
+                 ap_records[i].ssid, ap_records[i].rssi, ap_records[i].primary);
+    for (int i = 0; i < number; i++)
+     {
         ESP_LOGI(TAG, "SSID: %s, RSSI: %d, Channel: %d",
                  ap_records[i].ssid, ap_records[i].rssi, ap_records[i].primary);
     }

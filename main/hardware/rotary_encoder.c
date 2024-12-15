@@ -53,7 +53,9 @@ static bool pcnt_on_reach(pcnt_unit_handle_t unit, const pcnt_watch_event_data_t
  */
 void encoder_handler_task(void *param)
 {
-	int pulse_count = 0;
+	static int pulse_count = 5000;
+	
+	int temp_pulse_count = 0;
 
 	int static prev_pulse_count = 0;
 
@@ -70,7 +72,10 @@ void encoder_handler_task(void *param)
     while (1)
     {
 
-        pcnt_unit_get_count(pcnt_unit, &pulse_count);
+        pcnt_unit_get_count(pcnt_unit, &temp_pulse_count);
+        
+        pulse_count += temp_pulse_count;
+        
 
         if(pulse_count < -1  || (negative_pulse_falg == true && pulse_count == 0))
         {
@@ -80,8 +85,6 @@ void encoder_handler_task(void *param)
         {
         	negative_pulse_falg = false;
         }
-
-
 
         pulse_count = pulse_count > 0 ? pulse_count : pulse_count * -1;
 
