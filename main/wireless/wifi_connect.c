@@ -30,7 +30,7 @@
 /* VARIABLES -----------------------------------------------------------------*/
 static const char* TAG = "WiFi";
 
-uint8_t wifi_memory[50] = {0};
+uint8_t wifi_memory[100] = {0};
 /* DEFINITIONS ---------------------------------------------------------------*/
 
 /* MACROS --------------------------------------------------------------------*/
@@ -134,9 +134,11 @@ uint16_t wifi_scan_start(void)
 
 char* wifi_scan_result(uint16_t number)
 {
-	    // Allocate memory to store AP records
+	// Allocate memory to store AP records
+	uint16_t access_point_index = number - 1;
     wifi_ap_record_t *ap_records = malloc(number * sizeof(wifi_ap_record_t));
-    if (ap_records == NULL) {
+    if (ap_records == NULL) 
+    {
         ESP_LOGE(TAG, "Failed to allocate memory for AP records");
         return NULL;
     }
@@ -144,15 +146,17 @@ char* wifi_scan_result(uint16_t number)
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_records));
 
     // Log the scan results
+
     sprintf((char *)wifi_memory, "SSID: %s, RSSI: %d, Channel: %d",
-                 ap_records[i].ssid, ap_records[i].rssi, ap_records[i].primary);
-    for (int i = 0; i < number; i++)
-     {
-        ESP_LOGI(TAG, "SSID: %s, RSSI: %d, Channel: %d",
-                 ap_records[i].ssid, ap_records[i].rssi, ap_records[i].primary);
-    }
+            ap_records[access_point_index].ssid, ap_records[access_point_index].rssi, ap_records[access_point_index].primary);
+
+    ESP_LOGI(TAG, "SSID: %s, RSSI: %d, Channel: %d",
+            ap_records[access_point_index].ssid, ap_records[access_point_index].rssi, ap_records[access_point_index].primary);
+
 
     // Free allocated memory
     free(ap_records);
+    
+    return (char*) wifi_memory;
 }
 /**************************  Useful Electronics  ****************END OF FILE***/
