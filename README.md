@@ -5,8 +5,7 @@
 
 ### PCBWay
 Tutorial Series Sponsor PCBWay Website. You can get extra free coupons using the link below:
-
-[<img src="https://github.com/UsefulElectronics/esp32s3-gc9a01-lvgl/blob/main/banner/banner(320x100).gif">](https://www.pcbway.com/setinvite.aspx?inviteid=582640)
+https://www.pcbway.com/setinvite.aspx?inviteid=582640
 
 ***
 
